@@ -1,0 +1,164 @@
+#let title = "Why I don't like Go"
+// #let title = "Yet another article about how bad Go is"
+
+#import "/lib.typ": template
+#show: template.with(title: title)
+
+// #show raw.where(lang: none): set raw(lang: "go")
+// #show ref.where(target: heading): it => {}
+// #table(columns: 10, ..dictionary(html).keys())
+
+as the language
+
+This is just a list of my pain points which I collected over time (sounds like an achievement). Maybe some, maybe all of them are a matter of taste
+
+// 4
+- ```go if err != nil```, classic point in criticism of Go. Loosely typed error, combined with the lack of compiler-enforced checks gives you little control over what's happening. But it's better than exceptions, can't disagree. But "better" doesn't mean "good", do not forget it
+// 5
+- Due to compiler magic some operations could return varying number of arguments, and you should know this. For example, type assertion:
+
+    ```go
+    n1 := (a).(string)
+    n2, ok := (a).(string)
+    ```
+
+// 8
+- Continuing previous point: why ```go a``` in ```go for a := range slice {}``` is index but in ```go for _, a := range slice {}``` it's a value? Strange decision, I barely use former variant
+- Many things that are warnings in other languages, are hard errors:
+    // 6
+    - You can't reuse variable name if you do not need old value anymore
+    // 3
+    - You can't just add unused import, because code won't compile. Why it's bad? It bothers me when I want to comment some code to run test again just to find out that some import is unused. Also you can't compile unused variables
+
+        // 3
+        But on the other hand, this "warning" about unused variables can silently skip it if it's not really used:
+        ```go
+        x, err := foo()
+        if err != nil { /* handle */ }
+        x, err = foo()
+        // err is ignored
+        x, err = foo()
+        if err != nil { /* handle */ }
+        ```
+
+    // 15
+    - Writing ```go fmt.Println("%v", a)``` leads to `has potentional Printf formatting directive %v`. Yes, it's rare, but anyway
+// 1
+- Formatter is limited. Yes, there are external formatters, but...
+    - Not handles long lines
+    - Can't add trailing commas
+    - I personally not a fan of "aligning separated items in a grid" (don't know how is this called), but no so strongly, it looks good in some cases. Example:
+
+        ```go
+        type A struct {
+            a      string
+            foobar string
+        }
+        ```
+// 9
+- You can't just increase major version of library, because you also need to update all the imports, and all your users should do the same. Everywhere, where this library is imported. Meh
+// 18
+- You can't have 2 modules and import types from one to another and vice versa, because cyclic dependencies!
+// 17
+- That's a problem not only with Go, but. You can't tell if a slice/map that you pass to a function will be modified inside the function without looking at the code
+// 11
+- ```go :=``` overrides all variables on the left, leading to not so rare situation like this:
+    ```go
+    a := 5
+    if /* something */ {
+        // you can't do this if you want to update "a"
+        a, err := foo()
+        // you need do this instead:
+        newA, err := foo()
+        // ...
+        a = newA
+    }
+    ```
+// 10
+- Why do you want to write ```go arr.append(value)```, when you can just ```go append(arr, value)```?
+// 14
+- When something can't be compiled (e.g. you don't use a variable) compiler will also show you errors in all places where module with this error is imported, so you should scan with yours eyes non-highlighted output where all lines are placed very tight to find an original error. Nice!
+// 12
+- Language server also has a problems (I use it in Sublime Text via LSP-gopls):
+    - Sometimes it doesn't load changes after ```sh go mod tidy``` and you need to open files with definitions/functions from module with not-yet-loaded definitions, so LSP will see it
+// 2
+- When you write array elements or function arguments on separate lines, you should place trailing comma in the end, and you can tell that this is for "better developer experience", so that you can easily add a new line. But. When you place _calls_ on separate lines, why you can't place dots on the left like:
+
+    ```go
+    ExprBuilder()
+        .Left(Expr())
+        .Right(Expr())
+    ```
+
+    but should instead place it on the right side:
+
+    ```go
+    ExprBuilder().
+        Left(Expr()).
+        Right(Expr())
+    ```
+
+    You can't comment line in the middle. You can't "easily" add a new line. Just why
+// 7
+- ```go for``` for everything
+
+    _In some examples I wrote types instead of values to simplify code_
+
+    #let same = context [
+        #show: html.span.with(class: "mute")
+        #show: emph
+        same as above
+    ]
+
+    - ```go for {}``` - infinite loop
+    - ```go for i < 10 {}``` - while loop
+    - ```go for ; i < 10; {}``` - #same
+    - ```go for i := 0; i < 10; i++ {}``` - basic C-style loop
+    - ```go for i := range 10 {}``` - #same
+    - ```go for index := range []any {}``` - loop over indices
+    - ```go for index := range "string" {}``` - #same
+    - ```go for index, item := range []any {}``` - loop over indices and values
+    - ```go for index, rune := range "string" {}``` - loop over indices and chars
+    - ```go for key, value := range map[any]any {}``` - loop over map's key/values
+    - ```go for value := range chan T {}``` - loop over channel's values
+    - ```go for range chan T {}``` - empty a channel (wtf?)
+    - Copied from #link("https://go.dev/ref/spec#For_range")[the spec] because I just don't know what is this:
+        ```go
+        // fibo generates the Fibonacci sequence
+        fibo := func(yield func(x int) bool) {
+            f0, f1 := 0, 1
+            for yield(f0) {
+                f0, f1 = f1, f0 + f1
+            }
+        }
+
+        // print the Fibonacci numbers below 1000:
+        for x := range fibo {
+            if x >= 1000 {
+                break
+            }
+            fmt.Printf("%d ", x)
+        }
+        // output: 0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
+        ```
+- That's not the case in the last half of year (if I remember time spans correctly), but one of the popular linters, `golangci-lint` (I don't know others, to be honest), was very bad at supporting backward compatibility for its configuration
+
+== Something that I was wrong about <i-was-wrong>
+
+I wrote this down at some point, but tested it now and turns out it's not true
+
+- Two ```go time.Time``` objects which hold equal time but has different time zones, are #strike[not] equal
+
+    ```go
+    t1, _ := time.Parse(time.RFC3339, "2006-01-01T10:00:00Z")
+    t2, _ := time.Parse(time.RFC3339, "2006-01-01T11:00:00+01:00")
+    fmt.Println(t1.Compare(t2)) // output: 0 - means equal
+    ```
+
+    #link("https://go.dev/play/p/ElbZ40S_RIH")[Playground], #link("https://pkg.go.dev/time#Time.Compare")[docs]
+
+== Something that I didn't faced myself <more-problems>
+
+because I didn't use it (yet), but there are more problems exists
+
+- Paths is cursed. Read #link("https://fasterthanli.me/articles/i-want-off-mr-golangs-wild-ride")[I want off Mr. Golang's Wild Ride] for more

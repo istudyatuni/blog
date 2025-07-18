@@ -1,0 +1,172 @@
+/* https://www.iamsajid.com/ui-colors */
+:root,
+body.dark {
+  /* hsl (fallback color) */
+  --bg-dark: hsl(238 62% 3%);
+  --bg: hsl(235 41% 6%);
+  --bg-light: hsl(234 26% 10%);
+  /* darken a bit, original: hsl(233 100% 100%) */
+  --text: hsl(221.08 22% 82%);
+  --text-muted: hsl(233 30% 74%);
+  --highlight: hsl(233 16% 43%);
+  --border: hsl(234 20% 32%);
+  --border-muted: hsl(235 27% 22%);
+  --primary: hsl(234 72% 79%);
+  --secondary: hsl(51 42% 58%);
+  --danger: hsl(9 26% 64%);
+  --warning: hsl(52 19% 57%);
+  --success: hsl(146 17% 59%);
+  --info: hsl(217 28% 65%);
+  /* oklch */
+  --bg-dark: oklch(0.1 0.025 279);
+  --bg: oklch(0.15 0.025 279);
+  --bg-light: oklch(0.2 0.025 279);
+  /* darken a bit, original: oklch(0.96 0.05 279) */
+  --text: oklch(0.85 0.02 266);
+  --text-muted: oklch(0.76 0.05 279);
+  --highlight: oklch(0.5 0.05 279);
+  --border: oklch(0.4 0.05 279);
+  --border-muted: oklch(0.3 0.05 279);
+  --primary: oklch(0.76 0.1 279);
+  --secondary: oklch(0.76 0.1 99);
+  --danger: oklch(0.7 0.05 30);
+  --warning: oklch(0.7 0.05 100);
+  --success: oklch(0.7 0.05 160);
+  --info: oklch(0.7 0.05 260);
+}
+
+body.light {
+  /* hsl (fallback color) */
+  --bg-dark: hsl(232 53% 92%);
+  --bg: hsl(232 100% 97%);
+  --bg-light: hsl(232 100% 100%);
+  --text: hsl(241 62% 8%);
+  --text-muted: hsl(234 20% 32%);
+  --highlight: hsl(232 100% 100%);
+  --border: hsl(233 16% 55%);
+  --border-muted: hsl(233 23% 67%);
+  --primary: hsl(238 34% 36%);
+  --secondary: hsl(52 100% 12%);
+  --danger: hsl(9 21% 41%);
+  --warning: hsl(52 23% 34%);
+  --success: hsl(147 19% 36%);
+  --info: hsl(217 22% 41%);
+  /* oklch */
+  --bg-dark: oklch(0.92 0.025 279);
+  --bg: oklch(0.96 0.025 279);
+  --bg-light: oklch(1 0.025 279);
+  --text: oklch(0.15 0.05 279);
+  --text-muted: oklch(0.4 0.05 279);
+  --highlight: oklch(1 0.05 279);
+  --border: oklch(0.6 0.05 279);
+  --border-muted: oklch(0.7 0.05 279);
+  --primary: oklch(0.4 0.1 279);
+  --secondary: oklch(0.4 0.1 99);
+  --danger: oklch(0.5 0.05 30);
+  --warning: oklch(0.5 0.05 100);
+  --success: oklch(0.5 0.05 160);
+  --info: oklch(0.5 0.05 260);
+}
+
+body {
+  /*width: 100vw;*/
+  /*height: 100vh;*/
+  padding: 0;
+  margin: 0;
+
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0;
+  padding: 0 1.5em 2em 1.5em;
+
+  font-size: 20px;
+  font-family: "Nunito", sans-serif;
+  line-height: 30px;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+span.list>a {
+  font-size: 1.3em;
+}
+
+body:not(.light) span.light {
+  display: none;
+}
+
+body.light span.dark {
+  display: none;
+}
+
+button {
+  background-color: var(--bg-light);
+  color: var(--text);
+  border-style: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1em;
+}
+
+header a {
+  font-size: 1.5em;
+  color: var(--text);
+}
+
+body.light code.dark,
+body.light pre.dark {
+  display: none;
+}
+
+body.dark code.light,
+body.dark pre.light {
+  display: none;
+}
+
+pre {
+  width: 700px;
+  overflow-x: auto;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+span.mute {
+  color: var(--text-muted);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  width: fit-content;
+}
+
+.heading-id:hover {
+  color: var(--highlight);
+}
+
+.pointer {
+  cursor: pointer;
+}
