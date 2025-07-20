@@ -6,7 +6,10 @@ on:
       - master
     paths:
       - .github/workflows/pages.yaml
-      - frontend/**
+      - lib.typ
+      - content/**
+      - public/**
+      - syntect-plugin/**
   workflow_dispatch:
 
 env:
