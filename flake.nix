@@ -36,6 +36,10 @@
             })
             static-web-server
           ];
+          shellHook = ''
+            # typst respects this
+            unset SOURCE_DATE_EPOCH
+          '';
         };
         formatter = pkgs.writeShellScriptBin "alejandra" "exec ${lib.getExe pkgs.alejandra} .";
       }

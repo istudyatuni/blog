@@ -189,3 +189,9 @@ h6 {
 .pointer {
   cursor: pointer;
 }
+
+blockquote {
+  border-left: 3px solid var(--highlight);
+  margin-left: 0.5em;
+  padding-left: 1em;
+}

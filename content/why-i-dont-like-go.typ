@@ -14,22 +14,16 @@
 
 as the language
 
+#let magic = [#emoji.sparkles magic #emoji.sparkles]
+
 #wip
 
-This is just a list of my pain points which I collected over time (sounds like an achievement). Maybe some, maybe all of them are a matter of taste
+This is just a list of my pain points which I collected over the last #(datetime.today().year() - 2022) years (sounds like an achievement). Maybe some, maybe all of them are a matter of taste
+
+All points, except first 2, are listed without explicit order
 
 // 4
 - ```go if err != nil```, classic point in criticism of Go. Loosely typed error, combined with the lack of compiler-enforced checks gives you little control over what's happening. But it's better than exceptions, can't disagree. But "better" doesn't mean "good", do not forget it. But this #link("https://go.dev/blog/error-syntax")[won't change] in the "foreseeable future"
-// 5
-- Due to compiler magic some operations could return varying number of arguments, and you should know this. For example, type assertion:
-
-    ```go
-    n1 := (a).(string)
-    n2, ok := (a).(string)
-    ```
-
-// 8
-- Continuing previous point: why ```go a``` in ```go for a := range slice {}``` is index but in ```go for _, a := range slice {}``` it's a value? Strange decision, I barely use former variant
 - Many things that are warnings in other languages, are hard errors:
     // 6
     - You can't reuse variable name if you do not need old value anymore
@@ -49,24 +43,12 @@ This is just a list of my pain points which I collected over time (sounds like a
 
     // 15
     - Writing ```go fmt.Println("%v", a)``` leads to `has potentional Printf formatting directive %v`. Yes, it's rare, but anyway
-// 1
-- Formatter is limited. Yes, there are external formatters, but...
-    - Not handles long lines
-    - Can't add trailing commas
-    - I personally not a fan of "aligning separated items in a grid" (don't know how is this called), but no so strongly, it looks good in some cases. Example:
-
-        ```go
-        type A struct {
-            a      string
-            foobar string
-        }
-        ```
-// 9
-- You can't just increase major version of library, because you also need to update all the imports, and all your users should do the same. Everywhere, where this library is imported. Meh
 // 18
 - You can't have 2 modules and import types from one to another and vice versa, because cyclic dependencies!
 // 17
 - That's a problem not only with Go, but. You can't tell if a slice/map that you pass to a function will be modified inside the function without looking at the code
+// 10
+- Why do you want to write ```go arr.append(value)```, when you can just ```go append(arr, value)```?
 // 11
 - ```go :=``` overrides all variables on the left, leading to not so rare situation like this:
     ```go
@@ -80,10 +62,6 @@ This is just a list of my pain points which I collected over time (sounds like a
         a = newA
     }
     ```
-// 10
-- Why do you want to write ```go arr.append(value)```, when you can just ```go append(arr, value)```?
-// 14
-- When something can't be compiled (e.g. you don't use a variable) compiler will also show you errors in all places where module with this error is imported, so you should scan with yours eyes non-highlighted output where all lines are placed very tight to find an original error. Nice!
 // 12
 - Language server also has a problems (I use it in Sublime Text via LSP-gopls):
     - Sometimes it doesn't load changes after ```sh go mod tidy``` and you need to open files with definitions/functions from module with not-yet-loaded definitions, so LSP will see it
@@ -105,12 +83,26 @@ This is just a list of my pain points which I collected over time (sounds like a
     ```
 
     You can't comment line in the middle. You can't "easily" add a new line. Just why
+// 14
+- When something can't be compiled (e.g. you don't use a variable) compiler will also show you errors in all places where module with this error is imported, so you should scan with yours eyes non-highlighted output where all lines are placed very tight to find an original error. Nice!
+// 5
+- Due to compiler #magic some operations return varying number of arguments, depending on the number of arguments on the left side of assignment. By "magic" I mean that this is not allowed for user functions. For example, type assertion:
+
+    ```go
+    n1 := (a).(string)
+    n2, ok := (a).(string)
+    ```
+
+    This feel frustrating when you _think_ that some operation work in some way, but then turns out you was wrong. See below for more examples
+
+// 8
+- Continuing previous point: why ```go a``` in ```go for a := range slice {}``` is an index but in ```go for _, a := range slice {}``` is a value? Strange decision, I barely use former variant
 // 7
 - ```go for``` for everything
 
     _In some examples I wrote types instead of values to simplify code_
 
-    #let same = context [
+    #let same = [
         #show: html.span.with(class: "mute")
         #show: emph
         same as above
@@ -147,6 +139,29 @@ This is just a list of my pain points which I collected over time (sounds like a
         }
         // output: 0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
         ```
+// 1
+- Formatter is limited. Yes, there are external formatters, but...
+    - #link("https://go.dev/doc/effective_go#formatting")[Not handles] long lines
+
+        #quote[Go has no line length limit. Don't worry about overflowing a punched card. If a line feels too long, wrap it and indent with an extra tab.]
+
+    - Can't add trailing commas (that's a compilation error, as you remember)
+    - I personally not a fan of "aligning separated items in a grid" (don't know how is this called), but no so strongly, it looks good in some cases. Example:
+
+        ```go
+        type A struct {
+            a      string         `json:"a"`      // some description
+            foobar map[string]any `json:"foobar"` // some comment
+        }
+        ```
+    // - `gofumpt` (external formatter)
+- Specifying template for time parsing is weird. It basically looks like a date, but just with specific values:
+    ```go
+    const RFC3339 = "2006-01-02T15:04:05Z07:00"
+    ```
+    See below for example usage
+// 9
+- You can't just increase major version of library, because you also need to update all the imports, and all your users should do the same. Everywhere, where this library is imported. Meh
 - That's not the case in the last half of year (if I remember time spans correctly), but one of the popular linters, `golangci-lint` (I don't know others, to be honest), was very bad at supporting backward compatibility for its configuration
 
 == Something that I was wrong about <i-was-wrong>

@@ -212,6 +212,12 @@
         it
     }
 
+    set quote(quotes: false)
+    show quote: it => {
+        show: html.blockquote
+        it
+    }
+
     if title != none and not index {
         if type(title) == str or (type(title) == content and title.func() != heading) {
             [= #title]
