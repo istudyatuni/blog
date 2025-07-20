@@ -130,7 +130,24 @@ header {
 
 header p {
   font-size: 1.5em;
+}
+
+header .header-links {
+  display: flex;
+  gap: 1em;
+  align-content: end;
+}
+
+.header-links a {
   color: var(--text);
+}
+
+.header-links > .other {
+  font-size: 20px;
+  line-height: 20px;
+  align-self: center;
+  /* visually align links with different size */
+  margin-bottom: -2.5px;
 }
 
 body.light code.dark,

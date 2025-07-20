@@ -12,6 +12,11 @@
     notes: "My notes",
 )
 
+#let folder-paths = (
+    blog: "",
+    notes: "notes",
+)
+
 #let base = sys.inputs.at("base", default: "")
 
 #let join-paths(parts) = {
@@ -20,6 +25,10 @@
         return ""
     }
     res.join("/").replace("//", "/")
+}
+
+#let folder-dest(folder) = {
+    "/" + join-paths((base, folder-paths.at(folder)))
 }
 
 // remove markup from content
@@ -66,13 +75,25 @@
 #let switch_theme_button = html.elem("button", attrs: ("onclick": "switch_theme()"))[Change theme]
 #let wip = [_*Work in progress*_]
 
-#let navbar(title, dest: "..", as-link: true) = {
+#let navbar(title, dest: "..", as-link: true, folder: none) = {
+    let folders-links = if folder != none {
+        folders.keys()
+            .filter(k => k != folder)
+            .map(k => link(folder-dest(k), folder-names.at(k)))
+    } else {
+        ()
+    }
     html.header[
-        #if as-link {
-            link(dest)[#title]
-        } else {
-            title
-        }
+        #html.span(class: "header-links")[
+            #if as-link {
+                link(dest)[#title]
+            } else {
+                title
+            }
+            #for l in folders-links {
+                html.span(class: "other", l)
+            }
+        ]
         #switch_theme_button
     ]
 }
@@ -153,11 +174,9 @@
 
     navbar(
         folder-names.at(folder),
-        dest: "/" + join-paths((
-            base,
-            if folder == root-folder { "" } else { folder },
-        )),
+        dest: folder-dest(folder),
         as-link: not index,
+        folder: folder,
     )
 
     show raw: it => {
