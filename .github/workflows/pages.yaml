@@ -1,0 +1,61 @@
+name: deploy pages
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/pages.yaml
+      - frontend/**
+  workflow_dispatch:
+
+env:
+  JUST_COLOR: always
+
+jobs:
+  build:
+    # https://vite.dev/guide/static-deploy.html#github-pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: install tools
+        run: |
+          nix profile add "nixpkgs#just" && just -V
+          nix profile add "nixpkgs#fd" && fd -V
+
+      - name: install typst
+        run: |
+          nix profile add "github:typst/typst?rev=b790c6d59ceaf7a809cc24b60c1f1509807470e2"
+          typst -V
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: syntect-plugin -> target
+
+      - name: build
+        run: just serve_base='blog' build-all
+
+      - uses: actions/configure-pages@v5
+
+      - name: upload
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist/blog
+      - name: deploy
+        uses: actions/deploy-pages@v4

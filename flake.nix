@@ -20,6 +20,7 @@
           nativeBuildInputs = with pkgs; [
             (typst.overrideAttrs rec {
               version = "0.13.1-dev";
+              # do not forget to update workflows/pages.yaml
               src = pkgs.fetchFromGitHub {
                 owner = "typst";
                 repo = "typst";

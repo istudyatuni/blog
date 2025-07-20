@@ -23,7 +23,8 @@ mkoutput-dir path:
 
 [private]
 download-fonts:
-	#!/usr/bin/env sh
+	#!/usr/bin/env bash
+	set -euo pipefail
 	if [[ -e "{{ font-file }}" ]]; then exit 0; fi
 	mkdir -p "{{public-dir}}/fonts"
 	wget "{{ font-url }}" -O "{{ font-file }}"
@@ -46,15 +47,15 @@ typ cmd path *args:
 watch path="content/index.typ": (mkoutput-dir path) (typ "watch" path  "--port" port "--input" ("base=" + serve_base))
 build path="content/index.typ": (mkoutput-dir path) (typ "compile" path "--input" ("base=" + serve_base))
 
-build-all: && download-fonts copy-fonts
-	#!/usr/bin/env sh
+build-all: build-wasm && download-fonts copy-fonts
+	#!/usr/bin/env bash
 	set -euo pipefail
 	for path in $(fd .typ content); do
 		echo Building $path
 		just serve_base="$serve_base" build "$path"
 	done
 
-serve: build-wasm build-all
+serve: build-all
 	@echo Serving at http://localhost:{{ port }}
 	static-web-server -d {{ out-dir-base }} -p {{ port }}
 
