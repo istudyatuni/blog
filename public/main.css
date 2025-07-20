@@ -86,7 +86,9 @@ main {
 
   font-size: 20px;
   font-family: "Nunito", sans-serif;
+  font-size-adjust: ex-height 0.5;
   line-height: 30px;
+  box-sizing: border-box;
 }
 
 a {
