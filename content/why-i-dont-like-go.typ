@@ -15,7 +15,7 @@ as the language
 This is just a list of my pain points which I collected over time (sounds like an achievement). Maybe some, maybe all of them are a matter of taste
 
 // 4
-- ```go if err != nil```, classic point in criticism of Go. Loosely typed error, combined with the lack of compiler-enforced checks gives you little control over what's happening. But it's better than exceptions, can't disagree. But "better" doesn't mean "good", do not forget it
+- ```go if err != nil```, classic point in criticism of Go. Loosely typed error, combined with the lack of compiler-enforced checks gives you little control over what's happening. But it's better than exceptions, can't disagree. But "better" doesn't mean "good", do not forget it. But this #link("https://go.dev/blog/error-syntax")[won't change] in the "foreseeable future"
 // 5
 - Due to compiler magic some operations could return varying number of arguments, and you should know this. For example, type assertion:
 
