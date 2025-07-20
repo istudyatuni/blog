@@ -1,6 +1,26 @@
 #import "syntect-plugin/lib.typ" as syntect
 
-// #let content-to-string
+#let folders = (
+    blog: "blog",
+    notes: "notes",
+)
+
+#let root-folder = folders.blog
+
+#let folder-names = (
+    blog: "My blog",
+    notes: "My notes",
+)
+
+#let base = sys.inputs.at("base", default: "")
+
+#let join-paths(parts) = {
+    let res = parts.filter(p => p != "")
+    if res.len() == 0 {
+        return ""
+    }
+    res.join("/").replace("//", "/")
+}
 
 // remove markup from content
 // currently removes:
@@ -44,11 +64,15 @@
 }
 
 #let switch_theme_button = html.elem("button", attrs: ("onclick": "switch_theme()"))[Change theme]
-#let wip = [_Work in progress_]
+#let wip = [_*Work in progress*_]
 
-#let navbar() = {
+#let navbar(title, dest: "..", as-link: true) = {
     html.header[
-        #link("/")[My notes]
+        #if as-link {
+            link(dest)[#title]
+        } else {
+            title
+        }
         #switch_theme_button
     ]
 }
@@ -64,9 +88,12 @@
 }
 
 #let template(
+    // in which folder template is applied
+    folder: none,
+    // if it's a folder's index file
+    index: false,
+    // title of page. leave none if in index
     title: none,
-    title-as-heading: true,
-    show-header: true,
     it,
 ) = {
     // fix lsp can't sample values because of usage of html
@@ -74,19 +101,27 @@
         return it
     }
 
+    assert(folder != none, message: "folder should be set")
+
+    let title = if index {
+        folder-names.at(folder)
+    } else if type(title) == content {
+        sanitize-content(title)
+    } else {
+        title
+    }
+
     show: html.elem.with("html")
     html.meta(charset: "utf-8")
     html.meta(name: "viewport", content: "width=device-width, initial-scale=1")
     html.elem("meta", attrs: (name: "color-scheme", content: "dark"))
-    if type(title) == content {
-        html.title(sanitize-content(title))
-    } else {
-        html.title(title)
-    }
-    // todo: convert content to str
+
+    html.title(title)
+    // todo: convert content
     if type(title) == str {
         og("title", title)
     }
+
     html.style(gen-css-fonts(
         "Nunito",
         // from google-webfonts-helper: https://gwfh.mranftl.com/fonts/nunito?subsets=cyrillic,latin
@@ -116,9 +151,14 @@
 
     show: html.elem.with("main")
 
-    if show-header {
-        navbar()
-    }
+    navbar(
+        folder-names.at(folder),
+        dest: "/" + join-paths((
+            base,
+            if folder == root-folder { "" } else { folder },
+        )),
+        as-link: not index,
+    )
 
     show raw: it => {
         if it.lang == none or ("typ", "typc").contains(it.lang) {
@@ -153,7 +193,7 @@
         it
     }
 
-    if title != none and title-as-heading {
+    if title != none and not index {
         if type(title) == str or (type(title) == content and title.func() != heading) {
             [= #title]
         } else if type(title) == content {
@@ -162,4 +202,31 @@
     }
 
     it
+}
+
+// each post should contain importable "title" which are either content or string. it will be used as
+// import "post.typ": title
+#let posts-list(posts, dir: "") = {
+    for path in posts [
+        #let title = {
+            import "content/" + dir + path + ".typ": meta
+            let title = meta.title
+            let title = if type(title) == content {
+                sanitize-content(title)
+            } else if type(title) == str {
+                title
+            } else {
+                show: html.span.with(style: "color: red")
+                [unexpected title type #type(title), expected on of #(type([]), type(""))]
+            }
+            title
+        }
+        #[
+            #show: html.span.with(class: "list")
+            #link(path + ".html", title)
+        ]
+        // spacing
+        #html.br()
+        #html.br()
+    ]
 }

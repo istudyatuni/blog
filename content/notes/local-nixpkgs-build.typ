@@ -1,7 +1,11 @@
-#let title = [How to build a package in a local clone of #link("https://github.com/NixOS/nixpkgs")[nixpkgs]]
+#import "/lib.typ": template, folders
 
-#import "/lib.typ": template
-#show: template.with(title: title)
+#let meta = (
+    folder: folders.notes,
+    title: [How to build a package in a local clone of #link("https://github.com/NixOS/nixpkgs")[nixpkgs]],
+)
+
+#show: template.with(folder: meta.folder, title: meta.title)
 
 For example, if you need to update hashes manually, or test package in the shell
 

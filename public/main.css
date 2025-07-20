@@ -128,7 +128,7 @@ header {
   margin-top: 1em;
 }
 
-header a {
+header p {
   font-size: 1.5em;
   color: var(--text);
 }

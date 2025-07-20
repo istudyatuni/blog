@@ -1,13 +1,13 @@
 #import "/lib.typ": template, posts-list, folders
 
 #let meta = (
-    folder: folders.blog,
+    folder: folders.notes,
 )
 
 #show: template.with(folder: meta.folder, index: true)
 
 #let posts = (
-    "why-i-dont-like-go",
+    "local-nixpkgs-build",
 )
 
-#posts-list(posts)
+#posts-list(posts, dir: "notes/")

@@ -1,8 +1,12 @@
-#let title = "Why I don't like Go"
-// #let title = "Yet another article about how bad Go is"
+#import "/lib.typ": template, wip, folders
 
-#import "/lib.typ": template, wip
-#show: template.with(title: title)
+#let meta = (
+    folder: folders.blog,
+    title: "Why I don't like Go",
+    // title: "Yet another article about how bad Go is",
+)
+
+#show: template.with(folder: meta.folder, title: meta.title)
 
 // #show raw.where(lang: none): set raw(lang: "go")
 // #show ref.where(target: heading): it => {}
