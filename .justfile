@@ -1,18 +1,24 @@
+# to be able to get $serve_base in build-all
+set export
+
 port := "3000"
-out-dir := "dist"
+serve_base := ""
+out-dir-base := "dist"
+out-dir := join(out-dir-base, serve_base)
 source-dir := "content"
 public-dir := "public"
 font-url := "https://gwfh.mranftl.com/api/fonts/nunito?download=zip&subsets=cyrillic,latin&variants=200,300,500,600,700,800,900,200italic,300italic,regular,italic,500italic,600italic,700italic,800italic,900italic&formats=woff2"
 font-file-name := "nunito.zip"
-font-file-dir := public-dir / "fonts"
-font-file := font-file-dir / font-file-name
+font-file-dir := join(public-dir, "fonts")
+out-font-file-dir := join(out-dir, "fonts")
+font-file := join(font-file-dir, font-file-name)
 
 [private]
 @default:
 	just --list --unsorted
 
 [private]
-@mkoutput-dir path:
+mkoutput-dir path:
 	mkdir -p $(dirname {{ replace(path, source-dir, out-dir) }})
 
 [private]
@@ -25,8 +31,8 @@ download-fonts:
 
 [private]
 copy-fonts:
-	mkdir -p "{{out-dir}}/fonts"
-	cp {{ public-dir }}/fonts/*.woff2 "{{out-dir}}/fonts"
+	mkdir -p "{{ out-font-file-dir }}"
+	cp {{ public-dir }}/fonts/*.woff2 "{{ out-font-file-dir }}"
 
 [private]
 typ cmd path *args:
@@ -37,20 +43,23 @@ typ cmd path *args:
 		{{ path }} \
 		{{ replace(replace(path, source-dir, out-dir), ".typ", ".html") }}
 
-watch path="content/index.typ": (mkoutput-dir path) (typ "watch" path  "--port" port)
-build path="content/index.typ": (mkoutput-dir path) (typ "compile" path)
+watch path="content/index.typ": (mkoutput-dir path) (typ "watch" path  "--port" port "--input" ("base=" + serve_base))
+build path="content/index.typ": (mkoutput-dir path) (typ "compile" path "--input" ("base=" + serve_base))
 
 build-all: && download-fonts copy-fonts
 	#!/usr/bin/env sh
 	set -euo pipefail
 	for path in $(fd .typ content); do
 		echo Building $path
-		just build "$path"
+		just serve_base="$serve_base" build "$path"
 	done
 
 serve: build-wasm build-all
 	@echo Serving at http://localhost:{{ port }}
-	static-web-server -d {{ out-dir }} -p {{ port }}
+	static-web-server -d {{ out-dir-base }} -p {{ port }}
 
 build-wasm:
 	cd syntect-plugin && cargo build --release --target wasm32-unknown-unknown
+
+clean:
+	rm -r {{ out-dir-base }}
