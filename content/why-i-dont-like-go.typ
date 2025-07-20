@@ -1,7 +1,7 @@
 #let title = "Why I don't like Go"
 // #let title = "Yet another article about how bad Go is"
 
-#import "/lib.typ": template
+#import "/lib.typ": template, wip
 #show: template.with(title: title)
 
 // #show raw.where(lang: none): set raw(lang: "go")
@@ -9,6 +9,8 @@
 // #table(columns: 10, ..dictionary(html).keys())
 
 as the language
+
+#wip
 
 This is just a list of my pain points which I collected over time (sounds like an achievement). Maybe some, maybe all of them are a matter of taste
 

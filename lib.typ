@@ -44,6 +44,7 @@
 }
 
 #let switch_theme_button = html.elem("button", attrs: ("onclick": "switch_theme()"))[Change theme]
+#let wip = [_Work in progress_]
 
 #let navbar() = {
     html.header[
