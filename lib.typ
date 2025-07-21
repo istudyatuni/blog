@@ -215,11 +215,7 @@
                 variant: class-name,
                 it.text,
             )
-            if not it.block {
-                box(render)
-            } else {
-                render
-            }
+            render
         }
         render-code(it, "dark")
         render-code(it, "light")
