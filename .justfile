@@ -44,8 +44,13 @@ typ cmd path *args:
 		{{ path }} \
 		{{ replace(replace(path, source-dir, out-dir), ".typ", ".html") }}
 
-watch path="content/index.typ": (mkoutput-dir path) (typ "watch" path  "--port" port "--input" ("base=" + serve_base))
-build path="content/index.typ": (mkoutput-dir path) (typ "compile" path "--input" ("base=" + serve_base))
+watch path: (mkoutput-dir path) (typ "watch" path  "--port" port "--input" ("base=" + serve_base))
+build path: (mkoutput-dir path) (typ "compile" path "--input" ("base=" + serve_base))
+
+watch-blog: (watch "content/index.typ")
+watch-go: (watch "content/why-i-dont-like-go.typ")
+watch-notes: (watch "content/notes/index.typ")
+watch-nixpkgs: (watch "content/notes/local-nixpkgs-build.typ")
 
 build-all: build-wasm && download-fonts copy-fonts
 	#!/usr/bin/env bash
