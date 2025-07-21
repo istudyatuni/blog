@@ -6,8 +6,7 @@ function restore_theme() {
     let theme = localStorage.getItem(STORAGE_KEY)
     if (theme === LIGHT) {
         document.body.classList.add(LIGHT)
-    } else {
-        document.body.classList.add(DARK)
+        document.body.classList.remove(DARK)
     }
 }
 

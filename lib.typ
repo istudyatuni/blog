@@ -167,7 +167,7 @@
     html.style(read("public/main.css"))
     html.script(read("public/main.js"))
 
-    show: html.body.with()
+    show: html.body.with(class: "dark")
     html.script("restore_theme()")
 
     show: html.elem.with("main")
