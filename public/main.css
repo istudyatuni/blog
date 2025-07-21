@@ -194,7 +194,7 @@ strong {
 }
 
 blockquote {
-  border-left: 3px solid var(--highlight);
+  border-left: 3px solid var(--border);
   margin-left: 0.5em;
   padding-left: 1em;
 }
