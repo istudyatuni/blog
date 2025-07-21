@@ -42,11 +42,11 @@ All points, except first 2, are listed without explicit order
         ```
 
     // 15
-    - Writing ```go fmt.Println("%v", a)``` leads to `has potentional Printf formatting directive %v`. Yes, it's rare, but anyway
+    - Writing ```go fmt.Println("%v", a)``` leads to _`has potentional Printf formatting directive %v`_. Yes, it's rare, but anyway
 // 18
 - You can't have 2 modules and import types from one to another and vice versa, because cyclic dependencies!
 // 17
-- That's a problem not only with Go, but. You can't tell if a slice/map that you pass to a function will be modified inside the function without looking at the code
+- That's a problem not only with Go, but. You can't tell whether the slice/map that you pass to a function will be modified by this function without looking inside
 // 10
 - Why do you want to write ```go arr.append(value)```, when you can just ```go append(arr, value)```?
 // 11
@@ -82,7 +82,7 @@ All points, except first 2, are listed without explicit order
         Right(Expr())
     ```
 
-    You can't comment line in the middle. You can't "easily" add a new line. Just why
+    You can't comment last line. You can't "easily" add a new line. Just why
 // 14
 - When something can't be compiled (e.g. you don't use a variable) compiler will also show you errors in all places where module with this error is imported, so you should scan with yours eyes non-highlighted output where all lines are placed very tight to find an original error. Nice!
 // 5
@@ -109,12 +109,12 @@ All points, except first 2, are listed without explicit order
     - ```go for ; i < 10; {}``` - #same
     - ```go for i := 0; i < 10; i++ {}``` - basic C-style loop
     - ```go for i := range 10 {}``` - #same
-    - ```go for index := range []any {}``` - loop over indices
+    - ```go for index := range []any {}``` - over indices
     - ```go for index := range "string" {}``` - #same
-    - ```go for index, item := range []any {}``` - loop over indices and values
-    - ```go for index, rune := range "string" {}``` - loop over indices and chars
-    - ```go for key, value := range map[any]any {}``` - loop over map's key/values
-    - ```go for value := range chan T {}``` - loop over channel's values
+    - ```go for index, item := range []any {}``` - over indices and values
+    - ```go for index, rune := range "string" {}``` - over indices and chars /*(aka runes)*/
+    - ```go for key, value := range map[any]any {}``` - over map's key/values
+    - ```go for value := range chan T {}``` - over channel's values
     - ```go for range chan T {}``` - empty a channel (wtf?)
     - Copied from #link("https://go.dev/ref/spec#For_range")[the spec] because I just don't know what is this:
         ```go
@@ -150,8 +150,10 @@ All points, except first 2, are listed without explicit order
             foobar map[string]any `json:"foobar"` // some comment
         }
         ```
+
+        I guess it's formatted this way because there can be more than 2 "elements" on a single row of struct literal (type definition or struct construction), and it will be hard to read otherwise
     // - `gofumpt` (external formatter)
-- Specifying template for time parsing is weird. It basically looks like a date, but just with specific values:
+- Specifying template for time parsing is weird. It basically looks like a date, but just with specific values. From standard library:
     ```go
     const RFC3339 = "2006-01-02T15:04:05Z07:00"
     ```
@@ -178,4 +180,5 @@ I wrote this down at some point, but tested it now and turns out it's not true
 
 because I didn't use it (yet), but there are more problems exists
 
-- Paths is cursed. Read #link("https://fasterthanli.me/articles/i-want-off-mr-golangs-wild-ride")[I want off Mr. Golang's Wild Ride] for more
+- Paths are bad. Read #link("https://fasterthanli.me/articles/i-want-off-mr-golangs-wild-ride")[I want off Mr. Golang's Wild Ride] for more
+- ```go rune``` type is defined as ```go type rune = int32```. I'm not an UTF-8 expert, but as I understand, this is wrong. Read #link("https://janert.me/blog/2024/go-is-weird-strings/")[Go is Weird: Strings] for more
