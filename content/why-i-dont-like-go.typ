@@ -102,11 +102,7 @@ All points, except first 2, are listed without explicit order
 
     _In some examples I wrote types instead of values to simplify code_
 
-    #let same = [
-        #show: html.span.with(class: "mute")
-        #show: emph
-        same as above
-    ]
+    #let same = [_same as above_]
 
     - ```go for {}``` - infinite loop
     - ```go for i < 10 {}``` - while loop
