@@ -108,6 +108,28 @@
     }
 }
 
+#let show-title(title, index) = {
+    if title != none and not index {
+        if type(title) == str or (type(title) == content and title.func() != heading) {
+            [= #title]
+        } else if type(title) == content {
+            title
+        }
+    }
+}
+
+#let pdf-template(
+    title: none,
+    index: false,
+    it,
+) = {
+    show link: set text(fill: blue)
+
+    show-title(title, index)
+
+    it
+}
+
 #let template(
     // in which folder template is applied
     folder: none,
@@ -117,6 +139,9 @@
     title: none,
     it,
 ) = {
+    context if target() == "paged" {
+        return pdf-template(index: index, title: title, it)
+    }
     // fix lsp can't sample values because of usage of html
     if sys.inputs.at("lsp", default: "false") == "true" {
         return it
@@ -218,13 +243,7 @@
         it
     }
 
-    if title != none and not index {
-        if type(title) == str or (type(title) == content and title.func() != heading) {
-            [= #title]
-        } else if type(title) == content {
-            title
-        }
-    }
+    show-title(title, index)
 
     it
 }
