@@ -31,8 +31,9 @@ download-fonts:
 	cd "{{ font-file-dir }}" && unzip "{{ font-file-name }}"
 
 [private]
-copy-fonts:
+copy-static:
 	mkdir -p "{{ out-font-file-dir }}"
+	cp {{ public-dir }}/*.png "{{ out-dir }}"
 	cp {{ public-dir }}/fonts/*.woff2 "{{ out-font-file-dir }}"
 
 [private]
@@ -52,7 +53,7 @@ watch-go: (watch "content/why-i-dont-like-go.typ")
 watch-notes: (watch "content/notes/index.typ")
 watch-nixpkgs: (watch "content/notes/local-nixpkgs-build.typ")
 
-build-all: build-wasm && download-fonts copy-fonts
+build-all: build-wasm && download-fonts copy-static
 	#!/usr/bin/env bash
 	set -euo pipefail
 	for path in $(fd .typ content); do

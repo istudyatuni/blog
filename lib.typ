@@ -27,8 +27,12 @@
     res.join("/").replace("//", "/")
 }
 
+#let path-dest(path) = {
+    "/" + join-paths((base, path))
+}
+
 #let folder-dest(folder) = {
-    "/" + join-paths((base, folder-paths.at(folder)))
+    path-dest(folder-paths.at(folder))
 }
 
 // remove markup from content
@@ -167,6 +171,9 @@
     if type(title) == str {
         og("title", title)
     }
+
+    // https://icons8.com/icon/L0iBlZCZtM8q/blog
+    html.link(type: "image/png", sizes: ((32, 32),), rel: "icon", href: path-dest("favicon.png"))
 
     html.style(gen-css-fonts(
         "Nunito",
