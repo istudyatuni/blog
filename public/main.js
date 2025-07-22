@@ -1,6 +1,6 @@
 const LIGHT = "light"
 const DARK = "dark"
-const STORAGE_KEY = "notes-theme"
+const STORAGE_KEY = "blog-theme"
 
 function restore_theme() {
     let theme = localStorage.getItem(STORAGE_KEY)
