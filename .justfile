@@ -48,8 +48,9 @@ typ cmd path *args:
 watch path: (mkoutput-dir path) (typ "watch" path  "--port" port "--input" ("base=" + serve_base))
 build path: (mkoutput-dir path) (typ "compile" path "--input" ("base=" + serve_base))
 
-watch-blog: (watch "content/index.typ")
+watch-root: (watch "content/index.typ")
 watch-go: (watch "content/why-i-dont-like-go.typ")
+watch-blog: (watch "content/about-blog.typ")
 watch-notes: (watch "content/notes/index.typ")
 watch-nixpkgs: (watch "content/notes/local-nixpkgs-build.typ")
 
