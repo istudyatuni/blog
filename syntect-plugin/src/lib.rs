@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use syntect::{
     easy::HighlightLines,
     highlighting::{Color, ThemeSet},
-    parsing::SyntaxSet,
+    parsing::{Scope, SyntaxSet},
     util::LinesWithEndings,
 };
 use wasm_minimal_protocol::*;
@@ -47,20 +47,40 @@ pub fn highlight_html(args: &[u8]) -> Result<Vec<u8>, String> {
     let args: HighlightInput =
         from_reader(args).map_err(|e| format!("failed to parse cbor: {e}"))?;
 
-    let data = DATA.lock().map_err(|_| "failed to lock arc")?;
+    let data = DATA.lock().map_err(|_| "failed to lock mutex")?;
     let data = data
         .0
         .as_ref()
         .ok_or_else(|| "plugin wasn't initialized".to_string())?;
 
+    let scope = args
+        .scope
+        .map(|s| Scope::new(&s))
+        .transpose()
+        .map_err(|e| format!("failed to parse scope: {e}"))?;
+
     let syntax = data
         .syntaxes
         .find_syntax_by_extension(&args.extension)
+        .or_else(|| scope.and_then(|scope| data.syntaxes.find_syntax_by_scope(scope)))
         .ok_or_else(|| {
             format!(
-                "failed to find syntax for {}, number of syntaxes: {}",
+                "failed to find syntax for {}{scope}, number of syntaxes: {}{}",
                 args.extension,
-                data.syntaxes.syntaxes().len()
+                data.syntaxes.syntaxes().len(),
+                if scope.is_some() {
+                    format!(
+                        ", all syntaxes scopes: {:?}",
+                        data.syntaxes
+                            .syntaxes()
+                            .iter()
+                            .map(|s| s.scope.to_string())
+                            .collect::<Vec<_>>(),
+                    )
+                } else {
+                    "".to_string()
+                },
+                scope = scope.map(|s| format!(" (scope: {s})")).unwrap_or_default(),
             )
         })?;
 
@@ -97,6 +117,8 @@ pub fn highlight_html(args: &[u8]) -> Result<Vec<u8>, String> {
 #[derive(Debug, Deserialize)]
 struct HighlightInput {
     extension: String,
+    // fallback when extension not found
+    scope: Option<String>,
     text: String,
     #[serde(default = "default_theme")]
     theme: String,

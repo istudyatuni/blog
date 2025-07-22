@@ -11,6 +11,10 @@
     "base16-mocha-dark": "base16-mocha.dark",
 )
 
+#let ext-scope = (
+    typc: "source.typst",
+)
+
 #let is-theme-light(theme) = {
     (themes.github, themes.base16-ocean-light, themes.solarized-light).contains(theme)
 }
@@ -37,6 +41,7 @@
 ) = {
     let args = (
         extension: lang,
+        scope: ext-scope.at(lang, default: none),
         text: text,
         theme: if theme == none { default-theme(variant) } else { theme },
     )

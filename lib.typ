@@ -212,7 +212,7 @@
     )
 
     show raw: it => {
-        if it.lang == none or ("typ", "typc").contains(it.lang) {
+        if (none, "typc",).contains(it.lang) {
             return it
         }
         let render-code(it, class-name) = {

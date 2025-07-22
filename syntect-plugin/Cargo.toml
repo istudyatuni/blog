@@ -16,7 +16,8 @@ syntect = { version = "5.2.0", default-features = false, features = [
 	"default-themes",
 	"regex-fancy",
 ] }
-two-face = { version = "0.4.3", default-features = false, features = ["syntect-default-fancy"] }
+two-face = { git = "https://github.com/cosmichorrordev/two-face", rev = "ce73b6b844ea409cb7b980b4ba93aae17607385c", default-features = false, features = ["syntect-default-fancy"] }
+# two-face = { version = "0.4.3", default-features = false, features = ["syntect-default-fancy"] }
 wasm-minimal-protocol = "0.1.0"
 
 [profile.dev.package.syntect]
