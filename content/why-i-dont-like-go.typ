@@ -65,6 +65,7 @@ All points, except first 2, are listed without explicit order
 // 12
 - Language server also has a problems (I use it in Sublime Text via LSP-gopls):
     - Sometimes it doesn't load changes after ```sh go mod tidy``` and you need to open files with definitions/functions from module with not-yet-loaded definitions, so LSP will see it
+    - When you remove/comment out unused import, other unused imports stops red highlighting, and you need to save file and wait a bit to see it again
 // 2
 - When you write array elements or function arguments on separate lines, you should place trailing comma in the end, and you can tell that this is for "better developer experience", so that you can easily add a new line. But. When you place _calls_ on separate lines, why you can't place dots on the left like:
 
