@@ -189,8 +189,10 @@
         let level = chapter.level - 1
         let id = chapter.label
 
-        show: html.span.with(style: "padding-left: " + str(level) + "em")
-        link("#" + str(id), chapter.body)
+        html.span(
+            style: "padding-left: " + str(level) + "em",
+            link("#" + str(id), chapter.body),
+        )
         html.br()
     }
 }

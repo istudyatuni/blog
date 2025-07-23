@@ -104,6 +104,10 @@ a {
   text-decoration: underline 1px;
 }
 
+.toc-list > span {
+  display: inline-block;
+}
+
 span.list>a {
   font-size: 1.3em;
 }
