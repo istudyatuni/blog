@@ -51,6 +51,7 @@ build path: (mkoutput-dir path) (typ "compile" path "--input" ("base=" + serve_b
 watch-root: (watch "content/index.typ")
 watch-go: (watch "content/why-i-dont-like-go.typ")
 watch-blog: (watch "content/about-blog.typ")
+watch-blog-ru: (watch "content/about-blog.ru.typ")
 watch-notes: (watch "content/notes/index.typ")
 watch-nixpkgs: (watch "content/notes/local-nixpkgs-build.typ")
 

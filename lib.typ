@@ -36,6 +36,20 @@
     ),
 )
 
+#let translation-link-text = (
+    ru: "Читать на русском",
+    en: "Read in English",
+)
+
+#let default-lang = "en"
+
+#let link-translation(id, lang) = {
+    if lang == default-lang {
+        return id + ".html"
+    }
+    id + "." + lang + ".html"
+}
+
 #let join-paths(parts) = {
     let res = parts.filter(p => p != "")
     if res.len() == 0 {
@@ -166,6 +180,8 @@
 }
 
 #let template(
+    // name of file without .typ/.ru.typ, required when translations is set
+    id: none,
     // in which folder template is applied
     folder: none,
     // if it's a folder's index file
@@ -174,7 +190,10 @@
     title: none,
     // text to be written under title
     subtitle: none,
-    lang: "en",
+    // language of text
+    lang: default-lang,
+    // available translations for this post
+    translations: (),
     // whether to write "work in progress" under title
     draft: false,
     // creation date
@@ -182,6 +201,19 @@
     it,
 ) = {
     assert(not (draft and created != none), message: "can't be draft and has creation date")
+    assert(folder != none, message: "folder should be set")
+    assert(("en", "ru").contains(lang), message: "language should be on of (en, ru)")
+    assert(folder != none, message: "folder should be set")
+
+    let translations = if type(translations) == str {
+        (translations,)
+    } else {
+        translations
+    }
+
+    assert((str, array).contains(type(translations)), message: "translations should be either string or array")
+    assert(not translations.contains(lang), message: "translations should not contain lang")
+    assert(not (id == none and translations.len() != 0), message: "id should be set when translations is set")
 
     set text(lang: lang)
 
@@ -192,8 +224,6 @@
     if sys.inputs.at("lsp", default: "false") == "true" {
         return it
     }
-
-    assert(folder != none, message: "folder should be set")
 
     let title = if index {
         folder-names.at(folder)
@@ -300,6 +330,12 @@
         #if created != none {
             show: emph
             show-date(created)
+        }
+
+        #if translations.len() != 0 {
+            for tr in translations {
+                link(link-translation(id, tr), translation-link-text.at(tr))
+            }
         }
     ]
 

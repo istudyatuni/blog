@@ -1,10 +1,12 @@
 #import "/lib.typ": template, wip, folders
 
 #let meta = (
+    id: "about-blog",
     folder: folders.blog,
     title: "Как я сделал блог на Typst",
     subtitle: "и немного Rust",
     lang: "ru",
+    translations: "en",
     created: datetime(day: 23, month: 7, year: 2025),
 )
 
