@@ -1,11 +1,12 @@
 #import "/lib.typ": template, folders
 
 #let meta = (
+    id: "local-nixpkgs-build",
     folder: folders.notes,
     title: [How to build a package in a local clone of #link("https://github.com/NixOS/nixpkgs")[nixpkgs]],
 )
 
-#show: template.with(folder: meta.folder, title: meta.title)
+#show: template.with(..meta)
 
 For example, if you need to update hashes manually, or test package in the shell
 

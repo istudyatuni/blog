@@ -2,6 +2,7 @@
 
 #let meta = (
     folder: folders.notes,
+    index: true,
 )
 
 #show: template.with(folder: meta.folder, index: true)

@@ -1,6 +1,7 @@
 #import "/lib.typ": template, wip, folders
 
 #let meta = (
+    id: "why-i-dont-like-go",
     folder: folders.blog,
     title: "Why I don't like Go",
     subtitle: "as the language",

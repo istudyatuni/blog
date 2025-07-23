@@ -1,5 +1,8 @@
 #import "syntect-plugin/lib.typ" as syntect
 
+// todo: unhardcode
+#let deploy-url = "istudyatuni.github.io/blog"
+
 #let folders = (
     blog: "blog",
     notes: "notes",
@@ -55,7 +58,7 @@
     if res.len() == 0 {
         return ""
     }
-    res.join("/").replace("//", "/")
+    res.join("/").replace(regex("//{1,}"), "/")
 }
 
 #let path-dest(path) = {
@@ -180,6 +183,9 @@
 }
 
 #let template(
+    // required
+    // todo: this is required only to set og:url
+    // old description:
     // name of file without .typ/.ru.typ, required when translations is set
     id: none,
     // in which folder template is applied
@@ -213,7 +219,10 @@
 
     assert((str, array).contains(type(translations)), message: "translations should be either string or array")
     assert(not translations.contains(lang), message: "translations should not contain lang")
-    assert(not (id == none and translations.len() != 0), message: "id should be set when translations is set")
+
+    // todo: see comment about id
+    assert(index or id != none, message: "id should be set when non-index")
+    // assert(not (id == none and translations.len() != 0), message: "id should be set when translations is set")
 
     set text(lang: lang)
 
@@ -247,6 +256,13 @@
             og("title", title)
         }
     }
+    og("type", "article")
+    og("image", path-dest("favicon.png"))
+    og("url", "https://" + join-paths((
+        deploy-url,
+        if folder != none { folder-dest(folder) } else { "" },
+        id + ".html",
+    )))
 
     // https://icons8.com/icon/L0iBlZCZtM8q/blog
     html.link(type: "image/png", sizes: ((32, 32),), rel: "icon", href: path-dest("favicon.png"))
