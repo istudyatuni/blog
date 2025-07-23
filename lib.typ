@@ -233,7 +233,7 @@
         title
     }
 
-    show: html.elem.with("html")
+    show: html.html.with(lang: lang)
     html.meta(charset: "utf-8")
     html.meta(name: "viewport", content: "width=device-width, initial-scale=1")
     html.elem("meta", attrs: (name: "color-scheme", content: "dark"))
