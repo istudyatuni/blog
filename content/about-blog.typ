@@ -11,10 +11,7 @@
 
 #show: template.with(..meta)
 
-#link("https://en.wikipedia.org/wiki/Source_Code")[Исходный]
-#link("https://github.com/istudyatuni/blog")[код]
-// #link("https://en.wikipedia.org/wiki/Source_Code")[Исходный код]
-// #link("https://github.com/istudyatuni/blog")[Исходный код]
+#link("https://github.com/istudyatuni/blog")[Исходный код]
 
 В Typst 0.13 (релиз 19 февраля) добавили экспериментальный экспорт в HTML, также в июне и июле продолжалась разработка, например, добавили #link("https://github.com/typst/typst/pull/6476")[типизированное API];:
 
@@ -27,11 +24,9 @@
 
 По итогу я использовал самую последнию версию на тот момент
 
-// Первая версия была довольно простой, я добавил темную тему, сгенерированную в #link("https://www.iamsajid.com/ui-colors")[The only color palette you need] (сайт почему-то потом сломался, не только у меня, так что надо открыть Codepen, ссылка внизу страницы)
-
 == Подсветка синтаксиса <syntax-highlighting>
 
-Т.к. не было поддержки преобразования блоков кода с разбиением на отдельные #css("span") с нужными классами, сначала я сделал просто через встраивание SVG:
+Т.к. не было поддержки преобразования блоков кода с разбиением на отдельные #css("span") с нужными классами, сначала я сделал через встраивание SVG:
 
 ```typ
 #show raw: it => {
@@ -48,7 +43,7 @@
 
 _этого кода нет в истории т.к. я все схлопнул и оставил только итоговую версию_
 
-Переключение блоков светлой/темной темы сделано просто через CSS в зависимости от того, какой класс стоит у #css("body"):
+Переключение блоков светлой/темной темы сделано через CSS в зависимости от того, какой класс стоит у #css("body"):
 
 ```css
 body:not(.light) span.light {
@@ -137,17 +132,6 @@ fn default_theme() -> String {
 }
 ```
 
-На выход возвращается аналогично закодированный через `cbor` массив строк с цветом:
-
-```rs
-#[derive(Debug, Serialize)]
-struct HighlightOutput {
-    color: syntect::highlighting::Color,
-    text: String,
-}
-```
-
-// Далее надо найти синтаксис по расширению, тему по названию, и собрать получившийся набор цветов и текста:
 Ищем синтаксис по расширению и цветовую схему по названию:
 
 ```rs
@@ -155,10 +139,8 @@ let syntax = data
     .syntaxes
     .find_syntax_by_extension(&args.extension)
     .ok()?;
-let mut highlighter = HighlightLines::new(
-    syntax,
-    data.themes.themes.get(&args.theme).ok()?,
-);
+let theme = data.themes.themes.get(&args.theme).ok()?;
+let mut highlighter = HighlightLines::new(syntax, theme);
 ```
 
 Собираем получившийся набор цветов и текста:
@@ -171,6 +153,16 @@ for line in LinesWithEndings::from(&args.text) {
     for (color, s) in ranges {
         result.push(HighlightOutput::new(color.foreground, s));
     }
+}
+```
+
+Из функции возвращается закодированный через `cbor` массив элементов с их цветом:
+
+```rs
+#[derive(Debug, Serialize)]
+struct HighlightOutput {
+    color: syntect::highlighting::Color,
+    text: String,
 }
 ```
 
@@ -242,7 +234,46 @@ for line in LinesWithEndings::from(&args.text) {
 #res
 ```
 
-// todo: better name?
-// == Переключение темы <dark-light-theme>
+== Деплой через GitHub Workflows <gh-workflows>
 
-== Деплой через GitHub Workflows
+Пишу эту секцию только потому, что нашел классный и простой способ установки приложений в CI без необходимости использовать сторонние actions или устанавливать вручную
+
+=== Установка приложений через Nix <gh-workflows-nix>
+
+Нам нужны 2 action, которые включаются одной строчкой:
+
+```yaml
+steps:
+  - uses: DeterminateSystems/nix-installer-action@main
+  - uses: DeterminateSystems/magic-nix-cache-action@main
+```
+
+и после этого можно установить любое приложение, которое доступно в #link("https://search.nixos.org/packages")[репозитории пакетов Nix]:
+
+```yaml
+- name: install tools
+  run: |
+    nix profile add "nixpkgs#just" && just -V
+    nix profile add "nixpkgs#fd" && fd -V
+```
+
+или любое, у которого есть `flake.nix`, например, Typst:
+
+```yaml
+- name: install typst
+  run: |
+    nix profile add "github:typst/typst?rev=b790c6d59ceaf"
+    typst -V
+```
+
+=== Публикация в GitHub Pages <gh-workflows-pages>
+
+Для этого способа надо в настройках репозитория в "Pages" выбрать Source - GitHub Actions:
+
+```yaml
+- uses: actions/configure-pages@v5
+- uses: actions/upload-pages-artifact@v3
+  with:
+    path: ./dist/blog
+- uses: actions/deploy-pages@v4
+```
