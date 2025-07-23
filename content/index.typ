@@ -7,7 +7,7 @@
 #show: template.with(folder: meta.folder, index: true)
 
 #let posts = (
-    "about-blog",
+    "about-blog.ru",
     "why-i-dont-like-go",
 )
 
