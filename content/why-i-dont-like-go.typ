@@ -3,20 +3,18 @@
 #let meta = (
     folder: folders.blog,
     title: "Why I don't like Go",
+    subtitle: "as the language",
+    draft: true,
     // title: "Yet another article about how bad Go is",
 )
 
-#show: template.with(folder: meta.folder, title: meta.title)
+#show: template.with(..meta)
 
 // #show raw.where(lang: none): set raw(lang: "go")
 // #show ref.where(target: heading): it => {}
 // #table(columns: 10, ..dictionary(html).keys())
 
-as the language
-
 #let magic = [#emoji.sparkles magic #emoji.sparkles]
-
-#wip
 
 This is just a list of my pain points which I collected over the last #(datetime.today().year() - 2022) years (sounds like an achievement). Maybe some, maybe all of them are a matter of taste
 

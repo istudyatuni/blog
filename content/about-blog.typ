@@ -3,15 +3,13 @@
 #let meta = (
     folder: folders.blog,
     title: "Как я сделал блог на Typst",
+    subtitle: "и немного Rust",
+    draft: true,
 )
 
 #let css(name) = raw(lang: "css", name)
 
-#show: template.with(folder: meta.folder, title: meta.title)
-
-и немного Rust
-
-#wip
+#show: template.with(..meta)
 
 #link("https://en.wikipedia.org/wiki/Source_Code")[Исходный]
 #link("https://github.com/istudyatuni/blog")[код]

@@ -78,6 +78,7 @@
 
 #let switch_theme_button = html.elem("button", attrs: ("onclick": "switch_theme()"))[Change theme]
 #let wip = [_*Work in progress*_]
+#let wip-draft = [_Draft_]
 
 #let navbar(title, dest: "..", as-link: true, folder: none) = {
     let folders-links = if folder != none {
@@ -141,6 +142,10 @@
     index: false,
     // title of page. leave none if in index
     title: none,
+    // text to be written under title
+    subtitle: none,
+    // whether to write "work in progress" under title
+    draft: false,
     it,
 ) = {
     context if target() == "paged" {
@@ -246,7 +251,15 @@
         it
     }
 
-    show-title(title, index)
+    [
+        #show-title(title, index)
+
+        #subtitle
+
+        #if draft {
+            wip
+        }
+    ]
 
     it
 }
@@ -255,8 +268,8 @@
 // import "post.typ": title
 #let posts-list(posts, dir: "") = {
     for path in posts [
+        #import "content/" + dir + path + ".typ": meta
         #let title = {
-            import "content/" + dir + path + ".typ": meta
             let title = meta.title
             let title = if type(title) == content {
                 sanitize-content(title)
@@ -268,9 +281,14 @@
             }
             title
         }
+        #let draft = meta.at("draft", default: false)
         #[
             #show: html.span.with(class: "list")
             #link(path + ".html", title)
+            #if draft [
+                #html.br()
+                #box(wip-draft)
+            ]
         ]
         // spacing
         #html.br()
