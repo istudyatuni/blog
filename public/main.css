@@ -96,6 +96,14 @@ a {
   text-decoration: underline 1px;
 }
 
+.toc-list a {
+  text-decoration: none;
+}
+
+.toc-list a:hover {
+  text-decoration: underline 1px;
+}
+
 span.list>a {
   font-size: 1.3em;
 }

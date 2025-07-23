@@ -4,9 +4,10 @@
     id: "why-i-dont-like-go",
     folder: folders.blog,
     title: "Why I don't like Go",
+    // title: "Yet another article about how bad Go is",
     subtitle: "as the language",
     draft: true,
-    // title: "Yet another article about how bad Go is",
+    toc: false,
 )
 
 #show: template.with(..meta)

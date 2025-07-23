@@ -44,6 +44,11 @@
     en: "Read in English",
 )
 
+#let toc-text = (
+    ru: "Содержание",
+    en: "Table of Contents",
+)
+
 #let default-lang = "en"
 
 #let link-translation(id, lang) = {
@@ -149,6 +154,7 @@
 
 #let show-title(title, index) = {
     if title != none and not index {
+        set heading(outlined: false)
         if type(title) == str or (type(title) == content and title.func() != heading) {
             [= #title]
         } else if type(title) == content {
@@ -167,6 +173,25 @@
         res
     } else {
         [Unknown lang for date]
+    }
+}
+
+#let show-outline = context {
+    let chapters = query(heading.where(outlined: true))
+    if chapters.len() == 0 {
+        return
+    }
+
+    heading(level: 2, outlined: false, toc-text.at(text.lang))
+
+    show: html.div.with(class: "toc-list")
+    for chapter in chapters {
+        let level = chapter.level - 1
+        let id = chapter.label
+
+        show: html.span.with(style: "padding-left: " + str(level) + "em")
+        link("#" + str(id), chapter.body)
+        html.br()
     }
 }
 
@@ -204,6 +229,8 @@
     draft: false,
     // creation date
     created: none,
+    // whether to show table of contents
+    toc: true,
     it,
 ) = {
     assert(not (draft and created != none), message: "can't be draft and has creation date")
@@ -358,6 +385,10 @@
             for tr in translations {
                 link(link-translation(id, tr), translation-link-text.at(tr))
             }
+        }
+
+        #if not index and toc {
+            show-outline
         }
     ]
 
