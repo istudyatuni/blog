@@ -258,6 +258,8 @@
     }
     og("type", "article")
     og("image", path-dest("favicon.png"))
+    og("image:width", "32")
+    og("image:height", "32")
     og("url", "https://" + join-paths((
         deploy-url,
         if folder != none { folder-dest(folder) } else { "" },
