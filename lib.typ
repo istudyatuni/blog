@@ -236,7 +236,7 @@
     show: html.html.with(lang: lang)
     html.meta(charset: "utf-8")
     html.meta(name: "viewport", content: "width=device-width, initial-scale=1")
-    html.elem("meta", attrs: (name: "color-scheme", content: "dark"))
+    html.meta(name: "color-scheme", content: "dark")
 
     html.title(title)
     // todo: convert content
@@ -274,7 +274,7 @@
     show: html.body.with(class: "dark")
     html.script("restore_theme()")
 
-    show: html.elem.with("main")
+    show: html.main
 
     navbar(
         folder-names.at(folder),
