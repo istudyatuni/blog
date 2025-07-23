@@ -186,7 +186,7 @@
 
     show: html.div.with(class: "toc-list")
     for chapter in chapters {
-        let level = chapter.level - 1
+        let level = (chapter.level - 1) / 2
         let id = chapter.label
 
         html.span(
