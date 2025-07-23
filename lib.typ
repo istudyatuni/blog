@@ -241,7 +241,11 @@
     html.title(title)
     // todo: convert content
     if type(title) == str {
-        og("title", title)
+        if subtitle != none and type(subtitle) == str {
+            og("title", title + " " + subtitle)
+        } else {
+            og("title", title)
+        }
     }
 
     // https://icons8.com/icon/L0iBlZCZtM8q/blog
