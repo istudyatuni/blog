@@ -64,8 +64,11 @@ build-all: build-wasm && download-fonts copy-static
 	done
 
 serve: build-all
-	@echo Serving at http://localhost:{{ port }}
+	@echo Serving at http://localhost:{{ port }}/{{ serve_base }}
 	static-web-server -d {{ out-dir-base }} -p {{ port }}
+
+serve-prod:
+	just serve_base=blog serve
 
 build-wasm:
 	cd syntect-plugin && cargo build --release --target wasm32-unknown-unknown
