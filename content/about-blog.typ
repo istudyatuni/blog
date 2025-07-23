@@ -2,8 +2,8 @@
 
 #let meta = (
     folder: folders.blog,
-    title: "Как я сделал блог на Typst",
-    subtitle: "и немного Rust",
+    title: "How I made blog in Typst",
+    subtitle: "and a bit of Rust",
     created: datetime(day: 23, month: 7, year: 2025),
 )
 
@@ -11,22 +11,22 @@
 
 #show: template.with(..meta)
 
-#link("https://github.com/istudyatuni/blog")[Исходный код]
+#link("https://github.com/istudyatuni/blog")[Source code]
 
-В Typst 0.13 (релиз 19 февраля) добавили экспериментальный экспорт в HTML, также в июне и июле продолжалась разработка, например, добавили #link("https://github.com/typst/typst/pull/6476")[типизированное API];:
+In Typst 0.13 (released February 19) experimental HTML export has been added, development also continued in June and July, for example, #link("https://github.com/typst/typst/pull/6476")[typed API] has been added:
 
 ```typ
-// вместо
+// instead
 #html.elem("div", attrs: (class: "block"))
-// можно писать
+// you can now write
 #html.div(class: "block")
 ```
 
-По итогу я использовал самую последнию версию на тот момент
+As a result, I used the latest version at that time
 
-== Подсветка синтаксиса <syntax-highlighting>
+== Syntax highlighting <syntax-highlighting>
 
-Т.к. не было поддержки преобразования блоков кода с разбиением на отдельные #css("span") с нужными классами, сначала я сделал через встраивание SVG:
+Since highlighting the code by splitting it into separate #css("span")s with the requried classes wasn't supported, I initially did it by embedding SVG:
 
 ```typ
 #show raw: it => {
@@ -35,15 +35,15 @@
         let render = html.frame(it)
         if not it.block { box(render) } else { render }
     }
-    // для поддержки переключения темной и светлой темы
+    // to suport dark/light theme switching
     render-code(it, text-dark, "dark")
     render-code(it, text-light, "light")
 }
 ```
 
-_этого кода нет в истории т.к. я все схлопнул и оставил только итоговую версию_
+_this is not recorded in git history because I squashed everything and left only the final version_
 
-Переключение блоков светлой/темной темы сделано через CSS в зависимости от того, какой класс стоит у #css("body"):
+Switching between blocks for dark/light theme is done using CSS depending on the #css("body")'s class:
 
 ```css
 body:not(.light) span.light {
@@ -54,15 +54,13 @@ body.light span.dark {
 }
 ```
 
-=== Подсветка через плагин <syntax-plugin-highlighting>
+=== Highlighting with the plugin <syntax-plugin-highlighting>
 
-Я сделал небольшой плагин на Rust, который бы подсвечивал код, используя библиотеку #link("https://github.com/trishume/syntect")[syntect] (typst использует ту же библиотеку) + #link("https://github.com/cosmichorrordev/two-face")[two-face] (дополнительные синтаксисы)
+I wrote a small plugin in Rust for code highlighting using #link("https://github.com/trishume/syntect")[syntect] library (Typst uses the same) + #link("https://github.com/cosmichorrordev/two-face")[two-face] (additional syntaxes)
 
-Реализация получилась довольно простой
+==== Plugin initializing <plugin-init>
 
-==== Инициализация плагина <plugin-init>
-
-Инициализация нужна, чтобы можно было использовать #link("https://typst.app/docs/reference/foundations/plugin/#definitions-transition")[plugin transition API]. Данные нужно хранить в ```rs static```:
+Initializing is required to use #link("https://typst.app/docs/reference/foundations/plugin/#definitions-transition")[plugin transition API]. Data is saved in ```rs static```:
 
 ```rs
 pub struct SyntectData {
@@ -73,7 +71,7 @@ struct Context(Option<SyntectData>);
 static DATA: Mutex<Context> = Mutex::new(Context(None));
 ```
 
-при инициализации сохранять данные в ```rs DATA```:
+when ```rs init()``` is called data is saved in ```rs DATA```:
 
 ```rs
 #[wasm_func]
@@ -86,23 +84,23 @@ pub fn init() -> Vec<u8> {
 }
 ```
 
-а создать плагин в typst так:
+and plugin is created on the Typst side like this:
 
 ```typ
 #let _plugin = plugin("syntect_plugin.wasm")
 #let _plugin = plugin.transition(_plugin.init)
 ```
 
-_Идея, как хранить данные, подсмотрена в #link("https://github.com/lublak/typst-ctxjs-package/blob/15f7e7f5c81856bdeef64d01d7b01424312ec39d/src/lib.rs#L18")[typst-ctxjs-package]_
+_The way data is stored is inspired by #link("https://github.com/lublak/typst-ctxjs-package/blob/15f7e7f5c81856bdeef64d01d7b01424312ec39d/src/lib.rs#L18")[typst-ctxjs-package]_
 
-==== Генерация <syntax-highlighting-generation>
+==== Generation <syntax-highlighting-generation>
 
-В коде ниже опущена обработка ошибок:
+_Error handling is omited below_:
 
-- вместо ```rs f().map_err(/* обработка ошибки */)?``` - ```rs f()?```
-- вместо ```rs f().ok_or_else(/* обработка none */)?``` - ```rs f().ok()?```
+- instead of ```rs f().map_err(/* error handling */)?``` - ```rs f()?```
+- instead of ```rs f().ok_or_else(/* none handling */)?``` - ```rs f().ok()?```
 
-Сигнатура простая:
+Function is simple:
 
 ```rs
 #[wasm_func]
@@ -117,7 +115,7 @@ pub fn highlight_html(args: &[u8]) -> Result<Vec<u8>, String> {
 }
 ```
 
-На вход принимается закодированный через `cbor` набор параметров:
+It takes `cbor` encoded parameters:
 
 ```rs
 #[derive(Debug, Deserialize)]
@@ -132,7 +130,7 @@ fn default_theme() -> String {
 }
 ```
 
-Ищем синтаксис по расширению и цветовую схему по названию:
+Searches syntax by extension and color scheme by name:
 
 ```rs
 let syntax = data
@@ -143,7 +141,7 @@ let theme = data.themes.themes.get(&args.theme).ok()?;
 let mut highlighter = HighlightLines::new(syntax, theme);
 ```
 
-Собираем получившийся набор цветов и текста:
+Collects resulting colors and texts:
 
 ```rs
 let mut result = vec![];
@@ -156,7 +154,7 @@ for line in LinesWithEndings::from(&args.text) {
 }
 ```
 
-Из функции возвращается закодированный через `cbor` массив элементов с их цветом:
+And returns `cbor` encoded list of elements with respective colors:
 
 ```rs
 #[derive(Debug, Serialize)]
@@ -166,9 +164,9 @@ struct HighlightOutput {
 }
 ```
 
-==== Конвертация результата в HTML на стороне Typst <convert-highlighting-to-html>
+==== Converting result to HTML on the Typst side <convert-highlighting-to-html>
 
-Для каждого элемента создаем #css("span") с нужным цветом:
+For every element create #css("span") with respective color:
 
 ```typ
 #let highlight-html(lang, theme: none, text) = {
@@ -183,21 +181,19 @@ struct HighlightOutput {
 }
 ```
 
-Код на самом деле немного сложнее, т.к. он еще обрабатывает генерацию для светлой/темной темы, нужно ли использовать #css("pre") или #css("code"), и ставит тему по умолчанию
+_Code is actually a bit more complicated, it handles generation for dark/light theme, is #css("pre") or #css("code") required, and sets a default theme_
 
-// Я хочу переделать это, чтобы цвет не записывался как есть, но может быть просто подожду, когда это будет работать нативно
+== Fonts <fonts>
 
-== Шрифты <fonts>
-
-Поначалу я хотел использовать шрифт напрямую с Google Fonts, примерно так:
+I wanted to use font directly from Google Fonts, something like this:
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
 ```
 
-но с таким подходом был заметен момент изменения шрифтов с дефолтного на этот. Решил скачивать их локально, но при этом не хотелось их добавлять в Git. А в Google Fonts нет API для скачивания шрифтов. Нашёл #link("https://gwfh.mranftl.com")[google-webfonts-helper], оттуда можно скачивать
+but with this approach the moment when font is changing from default was noticeable. I decided to download it separately, but I didn't want to store it in Git. But Google Fonts doesn't provide an API for font downloading. I found a #link("https://gwfh.mranftl.com")[google-webfonts-helper], you can download from there
 
-В результате скачивается архив со шрифтами при сборке, распаковывается, и typst генерирует CSS. В функцию передаются параметры генерации:
+In the result archive with fonts is downloading when building, unpacked, and Typst generates CSS. Function takes parameters:
 
 ```typ
 #let gen-css-fonts(
@@ -212,9 +208,8 @@ struct HighlightOutput {
 }
 ```
 
-и для каждого варианта создается ```css @font-face```:
+and ```css @font-face``` is created for each variant:
 
-// todo: typc not work
 ```typ
 #let res = ""
 #for (style, weight) in variants {
@@ -234,13 +229,13 @@ struct HighlightOutput {
 #res
 ```
 
-== Деплой через GitHub Workflows <gh-workflows>
+== Deploying with GitHub Workflows <gh-workflows>
 
-Пишу эту секцию только потому, что нашел классный и простой способ установки приложений в CI без необходимости использовать сторонние actions или устанавливать вручную
+I'm writing this section only because I found an easy way to install apps on CI without the need to use any other actions for each specific app or to install it manually
 
-=== Установка приложений через Nix <gh-workflows-nix>
+=== Installing apps with Nix <gh-workflows-nix>
 
-Нам нужны 2 action, которые включаются одной строчкой:
+We need 2 actions, that are enabled like this:
 
 ```yaml
 steps:
@@ -248,7 +243,7 @@ steps:
   - uses: DeterminateSystems/magic-nix-cache-action@main
 ```
 
-и после этого можно установить любое приложение, которое доступно в #link("https://search.nixos.org/packages")[репозитории пакетов Nix]:
+and after this we can install any app that available in #link("https://search.nixos.org/packages")[Nix packages repository]:
 
 ```yaml
 - name: install tools
@@ -257,7 +252,7 @@ steps:
     nix profile add "nixpkgs#fd" && fd -V
 ```
 
-или любое, у которого есть `flake.nix`, например, Typst:
+or any app that has `flake.nix`, for example, Typst:
 
 ```yaml
 - name: install typst
@@ -266,9 +261,9 @@ steps:
     typst -V
 ```
 
-=== Публикация в GitHub Pages <gh-workflows-pages>
+=== Publish to GitHub Pages <gh-workflows-pages>
 
-Для этого способа надо в настройках репозитория в "Pages" выбрать Source - GitHub Actions:
+For this we need in repository setting in "Pages" choose Source - GitHub Actions and add this:
 
 ```yaml
 - uses: actions/configure-pages@v5
@@ -277,3 +272,5 @@ steps:
     path: ./dist/blog
 - uses: actions/deploy-pages@v4
 ```
+
+Thats all! See #link("https://github.com/istudyatuni/blog")[source code] for details
