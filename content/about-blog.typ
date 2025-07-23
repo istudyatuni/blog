@@ -4,7 +4,8 @@
     folder: folders.blog,
     title: "Как я сделал блог на Typst",
     subtitle: "и немного Rust",
-    draft: true,
+    lang: "ru",
+    created: datetime(day: 23, month: 7, year: 2025),
 )
 
 #let css(name) = raw(lang: "css", name)

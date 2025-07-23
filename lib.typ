@@ -19,6 +19,23 @@
 
 #let base = sys.inputs.at("base", default: "")
 
+#let months-long = (
+    ru: (
+        January: "Января",
+        February: "Февраля",
+        March: "Марта",
+        April: "Апреля",
+        May: "Мая",
+        June: "Июня",
+        July: "Июля",
+        August: "Августа",
+        September: "Сентября",
+        October: "Октября",
+        November: "Ноября",
+        December: "Декабря",
+    ),
+)
+
 #let join-paths(parts) = {
     let res = parts.filter(p => p != "")
     if res.len() == 0 {
@@ -123,6 +140,19 @@
     }
 }
 
+#let show-date(date) = context {
+    let res = date.display("[day] [month repr:long] [year]")
+    if text.lang == "en" {
+        res
+    } else if text.lang == "ru" {
+        let (m, replaced) = months-long.ru.pairs().at(date.month() - 1)
+        show m: replaced
+        res
+    } else {
+        [Unknown lang for date]
+    }
+}
+
 #let pdf-template(
     title: none,
     index: false,
@@ -144,10 +174,17 @@
     title: none,
     // text to be written under title
     subtitle: none,
+    lang: "en",
     // whether to write "work in progress" under title
     draft: false,
+    // creation date
+    created: none,
     it,
 ) = {
+    assert(not (draft and created != none), message: "can't be draft and has creation date")
+
+    set text(lang: lang)
+
     context if target() == "paged" {
         return pdf-template(index: index, title: title, it)
     }
@@ -259,6 +296,11 @@
         #if draft {
             wip
         }
+
+        #if created != none {
+            show: emph
+            show-date(created)
+        }
     ]
 
     it
@@ -282,12 +324,18 @@
             title
         }
         #let draft = meta.at("draft", default: false)
+        #let created = meta.at("created", default: none)
         #[
             #show: html.span.with(class: "list")
             #link(path + ".html", title)
             #if draft [
                 #html.br()
-                #box(wip-draft)
+                #wip-draft
+            ]
+            #if created != none [
+                #html.br()
+                #show: emph
+                #show-date(created)
             ]
         ]
         // spacing
