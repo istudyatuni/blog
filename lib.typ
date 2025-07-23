@@ -305,7 +305,7 @@
             weights.map(w => ("italic", w))
         },
         path-fn: (style, weight) => {
-            let res = "/fonts/nunito-v31-cyrillic_latin-"
+            let res = path-dest("/fonts/nunito-v31-cyrillic_latin-")
             if weight != 400 {
                 res += str(weight)
                 if style != "normal" {
