@@ -74,7 +74,7 @@ struct Context(Option<SyntectData>);
 static DATA: Mutex<Context> = Mutex::new(Context(None));
 ```
 
-при вызове ```rs init()``` сохранять данные в ```rs DATA```:
+при вызове ```rs init()``` данные сохраняются в ```rs DATA```:
 
 ```rs
 #[wasm_func]
