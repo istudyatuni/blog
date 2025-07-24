@@ -24,18 +24,18 @@
 
 #let months-long = (
     ru: (
-        January: "Января",
-        February: "Февраля",
-        March: "Марта",
-        April: "Апреля",
-        May: "Мая",
-        June: "Июня",
-        July: "Июля",
-        August: "Августа",
-        September: "Сентября",
-        October: "Октября",
-        November: "Ноября",
-        December: "Декабря",
+        January: "января",
+        February: "февраля",
+        March: "марта",
+        April: "апреля",
+        May: "мая",
+        June: "июня",
+        July: "июля",
+        August: "августа",
+        September: "сентября",
+        October: "октября",
+        November: "ноября",
+        December: "декабря",
     ),
 )
 
