@@ -237,7 +237,7 @@
 ) = {
     assert(not (draft and created != none), message: "can't be draft and has creation date")
     assert(folder != none, message: "folder should be set")
-    assert(("en", "ru").contains(lang), message: "language should be on of (en, ru)")
+    assert(("en", "ru").contains(lang), message: "language should be one of (en, ru)")
     assert(folder != none, message: "folder should be set")
 
     let translations = if type(translations) == str {
@@ -339,13 +339,21 @@
             return it
         }
         let render-code(it, class-name) = {
-            let render = syntect.highlight-html(
+            let result = syntect.highlight-html(
                 it.lang,
                 block: it.block,
                 variant: class-name,
                 it.text,
             )
-            render
+            // todo: do not inline css
+            if it.block {
+                html.style(result.css)
+                result.content
+            } else {
+                html.span(html.style(result.css))
+                show: html.span.with(style: "display: inline-block")
+                result.content
+            }
         }
         render-code(it, "dark")
         render-code(it, "light")

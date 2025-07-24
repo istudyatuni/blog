@@ -23,11 +23,10 @@
 #let default-light-theme = themes.github
 
 #let default-theme(variant) = {
-    if variant == "dark" {
-        default-dark-theme
-    } else {
-        default-light-theme
-    }
+    (
+        dark: default-dark-theme,
+        light: default-light-theme,
+    )
 }
 
 #let highlight-html(
@@ -44,6 +43,10 @@
         scope: ext-scope.at(lang, default: none),
         text: text,
         theme: if theme == none { default-theme(variant) } else { theme },
+        selector: (
+            dark: "body.dark",
+            light: "body.light",
+        ),
     )
     let res = cbor(_plugin.highlight_html(cbor.encode(args)))
 
@@ -51,17 +54,14 @@
         let func = if block { html.pre } else { html.code }
         let res = func(
             class: variant,
-            for (color: c, text) in res {
-                let rgb = (c.r, c.g, c.b).map(str).join(", ")
-                html.span(style: "color: rgb(" + rgb + ")", text)
+            for (css_class, text) in res.items {
+                html.span(class: css_class, text)
             }
         )
-        if block {
-            res
-        } else {
-            show: html.span.with(style: "display: inline-block")
-            res
-        }
+        res
     }
-    convert(block: block)
+    (
+        content: convert(block: block),
+        css: res.css,
+    )
 }
