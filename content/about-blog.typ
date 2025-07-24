@@ -43,7 +43,7 @@ Since highlighting the code by splitting it into separate #css("span")s with the
 }
 ```
 
-But with this approach text selection doesn't work, because now Typst rasterises text (#link("https://github.com/typst/typst/issues/1239")[feature requests exists] to insert text as-is) when exporting to SVG, and ```typ #html.frame()``` just renders some content in SVG
+But with this approach text selection doesn't work, because now Typst rasterises text (#link("https://github.com/typst/typst/issues/4702")[feature request exists] to insert text as-is) when exporting to SVG, and ```typ #html.frame()``` just renders some content in SVG
 
 _this is not recorded in git history because I squashed everything and left only the final version_
 
