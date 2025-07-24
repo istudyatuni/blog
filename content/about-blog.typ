@@ -28,7 +28,7 @@ As a result, I used the latest version at that time
 
 == Syntax highlighting <syntax-highlighting>
 
-Since highlighting the code by splitting it into separate #css("span")s with the requried classes wasn't supported, I initially did it by embedding SVG:
+Since highlighting the code by splitting it into separate #css("span")s with the required classes wasn't supported, I initially did it by embedding SVG:
 
 ```typ
 #show raw: it => {
@@ -42,6 +42,8 @@ Since highlighting the code by splitting it into separate #css("span")s with the
     render-code(it, text-light, "light")
 }
 ```
+
+But with this approach text selection doesn't work, because now Typst rasterises text (#link("https://github.com/typst/typst/issues/1239")[feature requests exists] to insert text as-is) when exporting to SVG, and ```typ #html.frame()``` just renders some content in SVG
 
 _this is not recorded in git history because I squashed everything and left only the final version_
 
