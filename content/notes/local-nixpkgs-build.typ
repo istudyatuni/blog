@@ -26,15 +26,7 @@ nix repl --impure
 
 And then in the repl:
 
-#[
-    #show raw: it => {
-        show regex(":\w"): set text(fill: red)
-        show "pkgs": set text(fill: orange)
-        it
-    }
-
-    - Load nixpkgs: ```nix :l .```
-    - Reload nixpkgs after editing packages: ```nix :r```
-    - Build a package: ```nix :b pkgs.your-package```
-    - Build a package and open shell with it: ```nix :u pkgs.your-package```
-]
+- Load nixpkgs: ```nix :l .```
+- Reload nixpkgs after editing packages: ```nix :r```
+- Build a package: ```nix :b pkgs.your-package```
+- Build a package and open shell with it: ```nix :u pkgs.your-package```
