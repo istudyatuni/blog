@@ -7,9 +7,9 @@ on:
     paths:
       - .github/workflows/pages.yaml
       - lib.typ
+      - assets/**
       - content/**
       - public/**
-      - syntect-plugin/**
   workflow_dispatch:
 
 env:
@@ -43,13 +43,6 @@ jobs:
         run: |
           nix profile add "github:typst/typst?rev=b790c6d59ceaf7a809cc24b60c1f1509807470e2"
           typst -V
-
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: wasm32-unknown-unknown
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: syntect-plugin -> target
 
       - name: build
         run: just serve_base='blog' build-all

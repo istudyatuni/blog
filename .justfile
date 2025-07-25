@@ -55,7 +55,7 @@ watch-blog-ru: (watch "content/about-blog.ru.typ")
 watch-notes: (watch "content/notes/index.typ")
 watch-nixpkgs: (watch "content/notes/local-nixpkgs-build.typ")
 
-build-all: build-wasm && download-fonts copy-static
+build-all: download-fonts copy-static
 	#!/usr/bin/env bash
 	set -euo pipefail
 	for path in $(fd .typ content); do
@@ -69,9 +69,6 @@ serve: build-all
 
 serve-prod:
 	just serve_base=blog serve
-
-build-wasm:
-	cd syntect-plugin && cargo build --release --target wasm32-unknown-unknown
 
 clean:
 	rm -r {{ out-dir-base }}
