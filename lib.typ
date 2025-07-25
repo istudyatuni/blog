@@ -66,6 +66,10 @@
     en: "Table of Contents",
 )
 
+#let date-format = (
+    en: "[day] [month repr:short]. [year]",
+)
+
 #let default-lang = "en"
 
 #let tags-display-joiner = [ #sym.dot.c ]
