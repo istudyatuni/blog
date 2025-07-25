@@ -1,5 +1,3 @@
-#import "syntect-plugin/lib.typ" as syntect
-
 // todo: unhardcode
 #let deploy-url = "istudyatuni.github.io/blog"
 
@@ -335,28 +333,24 @@
     )
 
     show raw: it => {
-        if (none, "typc",).contains(it.lang) {
-            return it
+        show: if it.block {
+            html.elem.with("pre")
+        } else {
+            html.elem.with("code")
         }
-        let render-code(it, class-name) = {
-            let result = syntect.highlight-html(
-                it.lang,
-                block: it.block,
-                variant: class-name,
-                it.text,
-            )
-            // todo: do not inline css
+        context for line in it.lines {
+            show text: it => context {
+                if text.fill == black {
+                    it
+                } else {
+                    html.elem("span", attrs: (style: "color: " + text.fill.to-hex()), it)
+                }
+            }
+            line.body
             if it.block {
-                html.style(result.css)
-                result.content
-            } else {
-                html.span(html.style(result.css))
-                show: html.span.with(style: "display: inline-block")
-                result.content
+                html.elem("br")
             }
         }
-        render-code(it, "dark")
-        render-code(it, "light")
     }
 
     show heading: it => {
