@@ -500,54 +500,13 @@
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Illegal</string>
+			<string>Invalid</string>
 			<key>scope</key>
-			<string>invalid.illegal</string>
+			<string>invalid</string>
 			<key>settings</key>
 			<dict>
-				<key>background</key>
-				<string>#000008</string>
 				<key>foreground</key>
-				<string>#000007</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>name</key>
-			<string>Broken</string>
-			<key>scope</key>
-			<string>invalid.broken</string>
-			<key>settings</key>
-			<dict>
-				<key>background</key>
-				<string>#000009</string>
-				<key>foreground</key>
-				<string>#000000</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>name</key>
-			<string>Deprecated</string>
-			<key>scope</key>
-			<string>invalid.deprecated</string>
-			<key>settings</key>
-			<dict>
-				<key>background</key>
-				<string>#000016</string>
-				<key>foreground</key>
-				<string>#000007</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>name</key>
-			<string>Unimplemented</string>
-			<key>scope</key>
-			<string>invalid.unimplemented</string>
-			<key>settings</key>
-			<dict>
-				<key>background</key>
 				<string>#000003</string>
-				<key>foreground</key>
-				<string>#000007</string>
 			</dict>
 		</dict>
 	</array>
