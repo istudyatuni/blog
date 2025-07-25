@@ -18,6 +18,13 @@
     notes: "notes",
 )
 
+#let css-root-theme-selector = (
+    dark: "body.dark",
+    light: "body.light",
+)
+
+#let hex-int = array.range(0, 10).map(str) + ("a", "b", "c", "d", "e", "f")
+
 #let base = sys.inputs.at("base", default: "")
 
 #let months-long = (
@@ -111,6 +118,16 @@
         res += face + "}\n"
     }
     res
+}
+
+#let css-for-theme(selector, palette) = {
+    palette
+        .pairs()
+        .sorted()
+        .map(((_, c)) => c).enumerate().map(((n, c)) => {
+            selector + " .b" + hex-int.at(n) + "{color:" + c + "}"
+        })
+        .join()
 }
 
 #let switch_theme_button = html.elem("button", attrs: ("onclick": "switch_theme()"))[Change theme]
@@ -319,6 +336,8 @@
     ))
     html.style(read("public/main.css"))
     html.script(read("public/main.js"))
+    html.style(css-for-theme(css-root-theme-selector.dark, yaml("assets/themes/ocean.yaml").palette))
+    html.style(css-for-theme(css-root-theme-selector.light, yaml("assets/themes/harmonic16-dark.yaml").palette))
 
     show: html.body.with(class: "dark")
     html.script("restore_theme()")
@@ -332,6 +351,8 @@
         folder: folder,
     )
 
+    // to recognize different tokens
+    set raw(theme: "assets/base16.tmTheme")
     show raw: it => {
         show: if it.block {
             html.elem.with("pre")
@@ -343,7 +364,8 @@
                 if text.fill == black {
                     it
                 } else {
-                    html.elem("span", attrs: (style: "color: " + text.fill.to-hex()), it)
+                    let hex-number = hex-int.at(int(text.fill.to-hex().slice(5, 7)))
+                    html.elem("span", attrs: (class: "b" + hex-number), it)
                 }
             }
             line.body
