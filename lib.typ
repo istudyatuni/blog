@@ -355,9 +355,9 @@
     set raw(theme: "assets/base16.tmTheme")
     show raw: it => {
         show: if it.block {
-            html.elem.with("pre")
+            html.pre.with()
         } else {
-            html.elem.with("code")
+            html.code.with()
         }
         for line in it.lines {
             show text: it => context {
@@ -365,12 +365,12 @@
                     it
                 } else {
                     let hex-number = hex-int.at(int(text.fill.to-hex().slice(5, 7)))
-                    html.elem("span", attrs: (class: "b" + hex-number), it)
+                    html.span(class: "b" + hex-number, it)
                 }
             }
             line.body
             if it.block {
-                html.elem("br")
+                html.br()
             }
         }
     }
