@@ -1,4 +1,4 @@
-#import "/lib.typ": template, wip, folders
+#import "/lib.typ": template, folders
 
 #let meta = (
     id: "about-blog",
@@ -214,9 +214,9 @@ In the result archive with fonts is downloading when building, unpacked, and Typ
 
 and ```css @font-face``` is created for each variant:
 
-```typ
-#let res = ""
-#for (style, weight) in variants {
+```typc
+let res = ""
+for (style, weight) in variants {
     let face = "@font-face {\n";
     face += attr("font-display", "swap")
     face += attr("font-family", string(name))
@@ -230,7 +230,7 @@ and ```css @font-face``` is created for each variant:
     )
     res += face + "}\n"
 }
-#res
+res
 ```
 
 == Deploying with GitHub Workflows <gh-workflows>

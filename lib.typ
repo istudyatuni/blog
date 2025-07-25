@@ -338,7 +338,7 @@
         } else {
             html.elem.with("code")
         }
-        context for line in it.lines {
+        for line in it.lines {
             show text: it => context {
                 if text.fill == black {
                     it

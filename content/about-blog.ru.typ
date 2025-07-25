@@ -1,4 +1,4 @@
-#import "/lib.typ": template, wip, folders
+#import "/lib.typ": template, folders
 
 #let meta = (
     id: "about-blog",
@@ -215,10 +215,9 @@ _Код на самом деле немного сложнее, т.к. он ещ
 
 и для каждого варианта создается ```css @font-face```:
 
-// todo: typc not work
-```typ
-#let res = ""
-#for (style, weight) in variants {
+```typc
+let res = ""
+for (style, weight) in variants {
     let face = "@font-face {\n";
     face += attr("font-display", "swap")
     face += attr("font-family", string(name))
@@ -232,7 +231,7 @@ _Код на самом деле немного сложнее, т.к. он ещ
     )
     res += face + "}\n"
 }
-#res
+res
 ```
 
 == Деплой через GitHub Workflows <gh-workflows>

@@ -1,4 +1,4 @@
-#import "/lib.typ": template, wip, folders
+#import "/lib.typ": template, folders
 
 #let meta = (
     id: "why-i-dont-like-go",
