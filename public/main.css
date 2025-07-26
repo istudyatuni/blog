@@ -104,7 +104,7 @@ a {
   text-decoration: underline 1px;
 }
 
-.toc-list > span {
+.toc-list>span {
   display: inline-block;
 }
 
@@ -209,4 +209,17 @@ blockquote {
   border-left: 3px solid var(--border);
   margin-left: 0.5em;
   padding-left: 1em;
+}
+
+body.dark .note {
+  background-color: var(--bg-light);
+}
+
+body.light .note {
+  background-color: var(--bg-dark);
+}
+
+.note {
+  padding: 3px 15px;
+  border-radius: 10px;
 }

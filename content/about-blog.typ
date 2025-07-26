@@ -1,4 +1,4 @@
-#import "/lib.typ": template, folders
+#import "/lib.typ": template, folders, show-date, note
 
 #let meta = (
     id: "about-blog",
@@ -61,6 +61,24 @@ body.light span.dark {
 === Highlighting with the plugin <syntax-plugin-highlighting>
 
 I wrote a small plugin in Rust for code highlighting using #link("https://github.com/trishume/syntect")[syntect] library (Typst uses the same) + #link("https://github.com/cosmichorrordev/two-face")[two-face] (additional syntaxes)
+
+#note[Updated #show-date(datetime(year: 2025, month: 7, day: 26))][
+    In the #link("https://github.com/hongjr03/typst-zebraw")[zebraw] library I found out that it's possible to #link("https://github.com/hongjr03/typst-zebraw/commit/5a73df5b8999fbb0bf2bbe4c81123fb84f2ec96e#diff-47933f66e50e5610666b617688cd00cd736e80c9f9678f52292b5a64f6f44161R89-R103")[do this native]. Typst already knows, what color should the elements be, you just need to export them to HTML:
+
+    ```typc
+    show raw: it => {
+        show text: it => context {
+            html.span(style: "color:" + text.fill.to-hex(), it)
+        }
+        show: html.pre
+        for line in it.lines {
+            line.body
+        }
+    }
+    ```
+
+    And the plugin is no longer needed
+]
 
 ==== Plugin initializing <plugin-init>
 

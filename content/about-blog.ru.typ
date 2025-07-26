@@ -1,4 +1,4 @@
-#import "/lib.typ": template, folders
+#import "/lib.typ": template, folders, show-date, note
 
 #let meta = (
     id: "about-blog",
@@ -62,6 +62,24 @@ body.light span.dark {
 === Подсветка через плагин <syntax-plugin-highlighting>
 
 Я сделал небольшой плагин на Rust, который бы подсвечивал код, используя библиотеку #link("https://github.com/trishume/syntect")[syntect] (Typst использует ту же библиотеку) + #link("https://github.com/cosmichorrordev/two-face")[two-face] (дополнительные синтаксисы)
+
+#note[Обновление от #show-date(datetime(year: 2025, month: 7, day: 26))][
+    В библиотеке #link("https://github.com/hongjr03/typst-zebraw")[zebraw] я обнаружил, что можно это #link("https://github.com/hongjr03/typst-zebraw/commit/5a73df5b8999fbb0bf2bbe4c81123fb84f2ec96e#diff-47933f66e50e5610666b617688cd00cd736e80c9f9678f52292b5a64f6f44161R89-R103")[делать нативно]. Typst уже знает, какого цвета должны быть элементы, надо просто экспортировать их в HTML:
+
+    ```typc
+    show raw: it => {
+        show text: it => context {
+            html.span(style: "color:" + text.fill.to-hex(), it)
+        }
+        show: html.pre
+        for line in it.lines {
+            line.body
+        }
+    }
+    ```
+
+    И плагин больше не нужен
+]
 
 ==== Инициализация плагина <plugin-init>
 

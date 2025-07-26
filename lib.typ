@@ -458,3 +458,9 @@
         #html.br()
     ]
 }
+
+#let note(title, body) = {
+    show: html.div.with(class: "note")
+    html.p(class: "title", emph(title))
+    body
+}
