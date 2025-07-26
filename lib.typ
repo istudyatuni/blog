@@ -359,15 +359,15 @@
         } else {
             html.code.with()
         }
-        for line in it.lines {
-            show text: it => context {
-                if text.fill == black {
-                    it
-                } else {
-                    let hex-number = hex-int.at(int(text.fill.to-hex().slice(5, 7)))
-                    html.span(class: "b" + hex-number, it)
-                }
+        show text: it => context {
+            if text.fill == black {
+                it
+            } else {
+                let hex-number = hex-int.at(int(text.fill.to-hex().slice(5, 7)))
+                html.span(class: "b" + hex-number, it)
             }
+        }
+        for line in it.lines {
             line.body
             if it.block {
                 html.br()
