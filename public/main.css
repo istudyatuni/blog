@@ -207,6 +207,7 @@ strong {
 
 blockquote {
   border-left: 3px solid var(--border);
+  border-radius: 3px;
   margin-left: 0.5em;
   padding-left: 1em;
 }
@@ -220,6 +221,6 @@ body.light .note {
 }
 
 .note {
-  padding: 3px 15px;
+  padding: 3px 1.5em;
   border-radius: 10px;
 }
