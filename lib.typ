@@ -359,7 +359,7 @@
         } else {
             html.code
         }
-        show html.elem.where(tag: "span"): it => context {
+        show html.elem.where(tag: "span"): it => {
             let color-css-prefix = "color:"
             if not "style" in it.attrs or not it.attrs.style.contains(color-css-prefix) {
                 return it
