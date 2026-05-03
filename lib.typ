@@ -1,5 +1,5 @@
 // todo: unhardcode
-#let deploy-url = "istudyatuni.github.io/blog"
+#let deploy-url = "istudyatuni.github.io"
 
 #let folders = (
     blog: "blog",
@@ -68,11 +68,11 @@
     if res.len() == 0 {
         return ""
     }
-    res.join("/").replace(regex("//{1,}"), "/")
+    res.join("/").replace(regex("//+"), "/")
 }
 
 #let path-dest(path) = {
-    "/" + join-paths((base, path))
+    ("/" + join-paths((base, path))).replace(regex("//+"), "/")
 }
 
 #let folder-dest(folder) = {
@@ -304,11 +304,11 @@
     og("image", path-dest("favicon.png"))
     og("image:width", "32")
     og("image:height", "32")
-    og("url", "https://" + join-paths((
-        deploy-url,
+    let url-path = join-paths((
         if folder != none { folder-dest(folder) } else { "" },
-        id + ".html",
-    )))
+        if id != none { id + ".html" } else { "" },
+    ))
+    og("url", "https://" + deploy-url + url-path)
 
     // https://icons8.com/icon/L0iBlZCZtM8q/blog
     html.link(type: "image/png", sizes: ((32, 32),), rel: "icon", href: path-dest("favicon.png"))
