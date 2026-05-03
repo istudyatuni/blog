@@ -8,6 +8,11 @@
 		"LSP": {
 			"formatters": {
 				"source.toml": "cargotom"
+			},
+			"LSP-Tinymist": {
+				"settings": {
+					"exportTarget": "html",
+				}
 			}
 		}
 	}
