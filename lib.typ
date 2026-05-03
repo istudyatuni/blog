@@ -355,17 +355,29 @@
     set raw(theme: "assets/base16.tmTheme")
     show raw: it => {
         show: if it.block {
-            html.pre.with()
+            html.pre
         } else {
-            html.code.with()
+            html.code
         }
-        show text: it => context {
-            if text.fill == black {
-                it
-            } else {
-                let hex-number = hex-int.at(int(text.fill.to-hex().slice(5, 7)))
-                html.span(class: "b" + hex-number, it)
+        show html.elem.where(tag: "span"): it => context {
+            let color-css-prefix = "color:"
+            if not "style" in it.attrs or not it.attrs.style.contains(color-css-prefix) {
+                return it
             }
+
+            // overengineered to not remove possible extra attributes
+            let styles = it.attrs.style.split(";").map(s => s.trim())
+            let color = styles.find(s => s.starts-with(color-css-prefix))
+
+            // remove inline color from attrs
+            let attrs = it.attrs
+            attrs.style = styles.filter(s => not s.starts-with(color-css-prefix)).join("; ")
+            if attrs.style == none {
+                attrs.remove("style")
+            }
+
+            let hex-number = hex-int.at(int(color.trim("color: #0000")))
+            html.elem("span", attrs: (class: "b" + hex-number, ..attrs), it.body)
         }
         for line in it.lines {
             line.body
