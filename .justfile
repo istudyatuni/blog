@@ -28,7 +28,14 @@ download-fonts:
 	if [[ -e "{{ font-file }}" ]]; then exit 0; fi
 	mkdir -p "{{public-dir}}/fonts"
 	wget "{{ font-url }}" -O "{{ font-file }}"
-	cd "{{ font-file-dir }}" && unzip "{{ font-file-name }}"
+	pushd "{{ font-file-dir }}"
+	unzip "{{ font-file-name }}"
+	popd
+	# remove version from filenames
+	for path in $(fd -I .woff2 public/fonts); do
+		newpath="$(echo "$path" | sed -E 's/nunito-v[0-9]+-/nunito-/g')"
+		mv "$path" "$newpath"
+	done
 
 [private]
 copy-static:
