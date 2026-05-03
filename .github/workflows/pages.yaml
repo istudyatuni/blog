@@ -38,11 +38,7 @@ jobs:
         run: |
           nix profile add "nixpkgs#just" && just -V
           nix profile add "nixpkgs#fd" && fd -V
-
-      - name: install typst
-        run: |
-          nix profile add "github:typst/typst?rev=b790c6d59ceaf7a809cc24b60c1f1509807470e2"
-          typst -V
+          nix profile add "nixpkgs/c6d65881c5624c9cae5ea6cedef24699b0c0a4c0#typst" && typst -V
 
       - name: build
         run: just serve_base='blog' build-all
