@@ -273,10 +273,6 @@
     context if target() == "paged" {
         return pdf-template(index: index, title: title, it)
     }
-    // fix lsp can't sample values because of usage of html
-    if sys.inputs.at("lsp", default: "false") == "true" {
-        return it
-    }
 
     let title = if index {
         folder-names.at(folder)
