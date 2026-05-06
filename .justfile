@@ -1,8 +1,6 @@
-# to be able to get $serve_base in build-all
-set export
-
 port := "3000"
 serve_base := ""
+serve_base_prod := "blog"
 out-dir-base := "dist"
 out-dir := join(out-dir-base, serve_base)
 source-dir := "content"
@@ -67,15 +65,18 @@ build-all: download-fonts copy-static
 	set -euo pipefail
 	for path in $(fd .typ content); do
 		echo Building $path
-		just serve_base="$serve_base" build "$path"
+		just serve_base="{{ serve_base }}" build "$path"
 	done
+
+build-prod:
+	just serve_base={{ serve_base_prod }} build-all
 
 serve: build-all
 	@echo Serving at http://localhost:{{ port }}/{{ serve_base }}
 	static-web-server -d {{ out-dir-base }} -p {{ port }}
 
 serve-prod:
-	just serve_base=blog serve
+	just serve_base={{ serve_base_prod }} serve
 
 clean:
 	rm -r {{ out-dir-base }}

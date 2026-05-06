@@ -41,7 +41,7 @@ jobs:
           nix profile add "nixpkgs/c6d65881c5624c9cae5ea6cedef24699b0c0a4c0#typst" && typst -V
 
       - name: build
-        run: just serve_base='blog' build-all
+        run: just build-prod
 
       - uses: actions/configure-pages@v5
 
