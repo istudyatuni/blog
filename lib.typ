@@ -465,7 +465,7 @@
         let draft = meta.at("draft", default: false)
         let created = meta.at("created", default: none)
 
-        show: html.span.with(class: "list")
+        show: html.div.with(class: ("list", "index-post-item"))
         link(path + ".html", title)
         if draft {
             html.br()
@@ -476,10 +476,6 @@
             show: emph
             show-date(created)
         }
-
-        // spacing
-        html.br()
-        html.br()
     }
 }
 

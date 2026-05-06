@@ -214,6 +214,10 @@ body.light .note {
   background-color: var(--bg-dark);
 }
 
+.index-post-item {
+    margin-bottom: 1em;
+}
+
 .note {
   padding: 3px 1.5em;
   border-radius: 10px;
