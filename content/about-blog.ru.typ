@@ -7,6 +7,7 @@
     subtitle: "и немного Rust",
     lang: "ru",
     translations: "en",
+    tags: "typst",
     created: datetime(day: 23, month: 7, year: 2025),
 )
 

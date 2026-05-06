@@ -8,6 +8,7 @@
     subtitle: "as the language",
     draft: true,
     toc: false,
+    tags: "golang",
 )
 
 #show: template.with(..meta)

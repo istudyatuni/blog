@@ -215,6 +215,16 @@
     }
 }
 
+// - If value is not array, return array with it
+// - If value is array, return it back
+#let maybe-array(value) = {
+    if type(value) != array {
+        (value,)
+    } else {
+        value
+    }
+}
+
 #let pdf-template(
     title: none,
     index: false,
@@ -245,6 +255,8 @@
     lang: default-lang,
     // available translations for this post
     translations: (),
+    // tag or list of tags
+    tags: (),
     // whether to write "work in progress" under title
     draft: false,
     // creation date
@@ -258,14 +270,12 @@
     assert(("en", "ru").contains(lang), message: "language should be one of (en, ru)")
     assert(folder != none, message: "folder should be set")
 
-    let translations = if type(translations) == str {
-        (translations,)
-    } else {
-        translations
-    }
-
     assert((str, array).contains(type(translations)), message: "translations should be either string or array")
     assert(not translations.contains(lang), message: "translations should not contain lang")
+    assert((str, array).contains(type(tags)), message: "tags should be either string or array")
+
+    let translations = maybe-array(translations)
+    let tags = maybe-array(tags)
 
     // todo: see comment about id
     assert(index or id != none, message: "id should be set when non-index")
@@ -417,6 +427,8 @@
             show: emph
             show-date(created)
         }
+
+        #tags.map(t => "#" + t).map(html.span.with(class: "tag")).join([ #sym.dot.c ])
 
         #if translations.len() != 0 {
             for tr in translations {

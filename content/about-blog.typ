@@ -6,6 +6,7 @@
     title: "How I made blog in Typst",
     subtitle: "and a bit of Rust",
     translations: "ru",
+    tags: "typst",
     created: datetime(day: 23, month: 7, year: 2025),
 )
 

@@ -4,6 +4,7 @@
     id: "local-nixpkgs-build",
     folder: folders.notes,
     title: [How to build a package in a local clone of #link("https://github.com/NixOS/nixpkgs")[nixpkgs]],
+    tags: "nix",
 )
 
 #show: template.with(..meta)
