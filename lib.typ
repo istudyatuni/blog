@@ -63,6 +63,7 @@
     id + "." + lang + ".html"
 }
 
+// Join paths with /
 #let join-paths(parts) = {
     let res = parts.filter(p => p != "")
     if res.len() == 0 {
@@ -71,12 +72,14 @@
     res.join("/").replace(regex("//+"), "/")
 }
 
-#let path-dest(path) = {
+// Absolute path
+#let real-path(path) = {
     ("/" + join-paths((base, path))).replace(regex("//+"), "/")
 }
 
-#let folder-dest(folder) = {
-    path-dest(folder-paths.at(folder))
+// Absolute folder path
+#let real-folder-path(folder) = {
+    real-path(folder-paths.at(folder))
 }
 
 // remove markup from content
@@ -138,7 +141,7 @@
     let folders-links = if folder != none {
         folders.keys()
             .filter(k => k != folder)
-            .map(k => link(folder-dest(k), folder-names.at(k)))
+            .map(k => link(real-folder-path(k), folder-names.at(k)))
     } else {
         ()
     }
@@ -297,17 +300,17 @@
         }
     }
     og("type", "article")
-    og("image", path-dest("favicon.png"))
+    og("image", real-path("favicon.png"))
     og("image:width", "32")
     og("image:height", "32")
     let url-path = join-paths((
-        if folder != none { folder-dest(folder) } else { "" },
+        if folder != none { real-folder-path(folder) } else { "" },
         if id != none { id + ".html" } else { "" },
     ))
     og("url", "https://" + deploy-url + url-path)
 
     // https://icons8.com/icon/L0iBlZCZtM8q/blog
-    html.link(type: "image/png", sizes: ((32, 32),), rel: "icon", href: path-dest("favicon.png"))
+    html.link(type: "image/png", sizes: ((32, 32),), rel: "icon", href: real-path("favicon.png"))
 
     html.style(gen-css-fonts(
         "Nunito",
@@ -318,7 +321,7 @@
             weights.map(w => ("italic", w))
         },
         path-fn: (style, weight) => {
-            let res = path-dest("/fonts/nunito-cyrillic_latin-")
+            let res = real-path("/fonts/nunito-cyrillic_latin-")
             if weight != 400 {
                 res += str(weight)
                 if style != "normal" {
@@ -342,7 +345,7 @@
 
     navbar(
         folder-names.at(folder),
-        dest: folder-dest(folder),
+        dest: real-folder-path(folder),
         as-link: not index,
         folder: folder,
     )
