@@ -37,7 +37,7 @@ Since highlighting the code by splitting it into separate #css("span")s with the
         let render = html.frame(it)
         if not it.block { box(render) } else { render }
     }
-    // to suport dark/light theme switching
+    // to support dark/light theme switching
     render-code(it, text-dark, "dark")
     render-code(it, text-light, "light")
 }
@@ -117,7 +117,7 @@ _The way data is stored is inspired by #link("https://github.com/lublak/typst-ct
 
 ==== Generation <syntax-highlighting-generation>
 
-_Error handling is omited below_:
+_Error handling is omitted below_:
 
 - instead of ```rs f().map_err(/* error handling */)?``` - ```rs f()?```
 - instead of ```rs f().ok_or_else(/* none handling */)?``` - ```rs f().ok()?```
