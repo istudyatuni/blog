@@ -218,10 +218,16 @@
     }
 }
 
-// - If value is not array, return array with it
-// - If value is array, return it back
-#let maybe-array(value) = {
-    if type(value) != array {
+// Put value in array if it's not array. It `ty` is not `auto`, return array
+// only if `type(value)` is equal to `ty`
+#let maybe-array(value, ty: auto) = {
+    if ty != auto {
+        if type(value) == ty {
+            (value,)
+        } else {
+            value
+        }
+    } else if type(value) != array {
         (value,)
     } else {
         value
@@ -461,7 +467,14 @@
 
     // all tags
     // deduplicate
-    let tags = meta.values().map(m => m.tags).flatten().map(t => (t, none)).to-dict().keys().sorted()
+    let tags = meta
+        .values()
+        .map(m => m.at("tags", default: ()))
+        .flatten()
+        .map(t => (t, none))
+        .to-dict()
+        .keys()
+        .sorted()
     // using "~=" can break if one tag is part of other tag, e.g. "ta" and "tag"
     let tag-filter-css = ```css
     body[data-tag-filter = "TAG"] [data-tags]:not([data-tags ~= "TAG"]) {
@@ -507,11 +520,11 @@
 
         let draft = meta.at("draft", default: false)
         let created = meta.at("created", default: none)
-        let tags = maybe-array(meta.tags)
+        let tags = maybe-array(meta.at("tags", default: ()), ty: str)
 
         show: html.elem.with("div", attrs: (
             class: ("list", "index-post-item").join(" "),
-            data-tags: if tags != none { tags.join(" ") } else { "" },
+            data-tags: if tags != () { tags.join(" ") } else { "" },
         ))
         link(path + ".html", title)
         if draft {
