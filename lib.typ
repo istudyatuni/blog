@@ -489,6 +489,7 @@
             .join(tags-display-joiner)
     }
 
+    let posts = posts.sorted(key: p => meta.at(p).at("created", default: datetime.today())).rev()
     for path in posts {
         let meta = meta.at(path)
         let title = {
