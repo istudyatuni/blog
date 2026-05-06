@@ -523,6 +523,8 @@
             show: emph
             show-date(created)
         }
+        show: html.span.with(style: "margin-left: 1.5em")
+        tags-default-display(tags)
     }
 }
 
