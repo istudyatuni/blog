@@ -164,16 +164,6 @@ header .header-links {
   margin-bottom: -2.5px;
 }
 
-body.light code.dark,
-body.light pre.dark {
-  display: none;
-}
-
-body.dark code.light,
-body.dark pre.light {
-  display: none;
-}
-
 pre {
   max-width: 960px;
   overflow-x: auto;
