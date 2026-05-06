@@ -423,32 +423,31 @@
         it
     }
 
-    {
-        show-title(title, index)
+    // content block is used to separated each part in its own <p>
+    [
+        #show-title(title, index)
 
-        subtitle
+        #subtitle
 
-        if draft {
+        #if created != none {
+            show: emph
+            show-date(created)
+        } else if draft {
             wip
         }
 
-        if created != none {
-            show: emph
-            show-date(created)
-        }
+        #tags-default-display(tags)
 
-        tags-default-display(tags)
-
-        if translations.len() != 0 {
+        #if translations.len() != 0 {
             for tr in translations {
                 link(link-translation(id, tr), translation-link-text.at(tr))
             }
         }
 
-        if not index and toc {
+        #if not index and toc {
             show-outline
         }
-    }
+    ]
 
     it
 }
