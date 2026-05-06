@@ -2,6 +2,9 @@ const LIGHT = "light"
 const DARK = "dark"
 const STORAGE_KEY = "blog-theme"
 
+const TAG_SELECTED_CLASS = "tag-selected"
+const DATA_TAG_FILTER = "data-tag-filter"
+
 function restore_theme() {
     let theme = localStorage.getItem(STORAGE_KEY)
     if (theme === LIGHT) {
@@ -30,4 +33,17 @@ function switch_theme() {
 
 function set_heading(id) {
     window.location.hash = id
+}
+
+/** @param {HTMLSpanElement} e */
+function set_tag_filter(e) {
+    let filtered_tag = document.body.getAttribute(DATA_TAG_FILTER)
+    let filter_active = filtered_tag != null
+    let tag = e.getAttribute("data-tag")
+
+    if (filter_active && tag == filtered_tag) {
+        document.body.removeAttribute(DATA_TAG_FILTER)
+    } else {
+        document.body.setAttribute(DATA_TAG_FILTER, tag)
+    }
 }

@@ -168,6 +168,10 @@ header .header-links {
     color: var(--primary);
 }
 
+.tags-top-block {
+    margin-top: 0;
+}
+
 pre {
   max-width: 960px;
   overflow-x: auto;

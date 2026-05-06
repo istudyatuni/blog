@@ -56,6 +56,9 @@
 
 #let default-lang = "en"
 
+#let tags-display-joiner = [ #sym.dot.c ]
+#let tags-default-display(tags) = tags.map(t => "#" + t).map(html.span.with(class: "tag")).join(tags-display-joiner)
+
 #let link-translation(id, lang) = {
     if lang == default-lang {
         return id + ".html"
@@ -428,7 +431,7 @@
             show-date(created)
         }
 
-        tags.map(t => "#" + t).map(html.span.with(class: "tag")).join([ #sym.dot.c ])
+        tags-default-display(tags)
 
         if translations.len() != 0 {
             for tr in translations {
@@ -444,11 +447,50 @@
     it
 }
 
+#let collect-meta(posts, dir: "") = {
+    for path in posts {
+        import "content/" + dir + path + ".typ": meta
+        ((path): meta)
+    }
+}
+
 // each post should contain importable "title" which are either content or string. it will be used as
 // import "post.typ": title
 #let posts-list(posts, dir: "") = {
+    let meta = collect-meta(posts, dir: dir)
+
+    // all tags
+    // deduplicate
+    let tags = meta.values().map(m => m.tags).flatten().map(t => (t, none)).to-dict().keys().sorted()
+    // using "~=" can break if one tag is part of other tag, e.g. "ta" and "tag"
+    let tag-filter-css = ```css
+    body[data-tag-filter = "TAG"] [data-tags]:not([data-tags ~= "TAG"]) {
+        display: none;
+    }
+    body[data-tag-filter = "TAG"] .tag[data-tag = "TAG"] {
+        color: var(--secondary);
+    }
+    ```.text
+    html.style(tags.map(t => tag-filter-css.replace("TAG", t)).join("\n"))
+    {
+        show: html.p.with(class: "tags-top-block")
+        [Tags: ]
+        tags
+            .map(t => html.elem(
+                "span",
+                attrs: (
+                    class: ("tag", "pointer").join(" "),
+                    title: "Click to filter by #" + t,
+                    onclick: "set_tag_filter(this)",
+                    data-tag: t,
+                ),
+                "#" + t,
+            ))
+            .join(tags-display-joiner)
+    }
+
     for path in posts {
-        import "content/" + dir + path + ".typ": meta
+        let meta = meta.at(path)
         let title = {
             let title = meta.title
             let title = if type(title) == content {
@@ -464,8 +506,12 @@
 
         let draft = meta.at("draft", default: false)
         let created = meta.at("created", default: none)
+        let tags = maybe-array(meta.tags)
 
-        show: html.div.with(class: ("list", "index-post-item"))
+        show: html.elem.with("div", attrs: (
+            class: ("list", "index-post-item").join(" "),
+            data-tags: if tags != none { tags.join(" ") } else { "" },
+        ))
         link(path + ".html", title)
         if draft {
             html.br()
