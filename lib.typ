@@ -435,8 +435,11 @@
         } else if draft {
             wip
         }
-
-        #tags-default-display(tags)
+        #if created != none or draft {
+            html.span(style: "margin-left: 1.5em", tags-default-display(tags))
+        } else {
+            tags-default-display(tags)
+        }
 
         #if translations.len() != 0 {
             for tr in translations {
