@@ -454,8 +454,8 @@
     }
 }
 
-// each post should contain importable "title" which are either content or string. it will be used as
-// import "post.typ": title
+// each post should contain importable "meta" dict with the same values as
+// passed to `template()`. it will be used as import "post.typ": meta
 #let posts-list(posts, dir: "") = {
     let meta = collect-meta(posts, dir: dir)
 
