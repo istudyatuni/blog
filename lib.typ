@@ -414,32 +414,32 @@
         it
     }
 
-    [
-        #show-title(title, index)
+    {
+        show-title(title, index)
 
-        #subtitle
+        subtitle
 
-        #if draft {
+        if draft {
             wip
         }
 
-        #if created != none {
+        if created != none {
             show: emph
             show-date(created)
         }
 
-        #tags.map(t => "#" + t).map(html.span.with(class: "tag")).join([ #sym.dot.c ])
+        tags.map(t => "#" + t).map(html.span.with(class: "tag")).join([ #sym.dot.c ])
 
-        #if translations.len() != 0 {
+        if translations.len() != 0 {
             for tr in translations {
                 link(link-translation(id, tr), translation-link-text.at(tr))
             }
         }
 
-        #if not index and toc {
+        if not index and toc {
             show-outline
         }
-    ]
+    }
 
     it
 }
@@ -447,9 +447,9 @@
 // each post should contain importable "title" which are either content or string. it will be used as
 // import "post.typ": title
 #let posts-list(posts, dir: "") = {
-    for path in posts [
-        #import "content/" + dir + path + ".typ": meta
-        #let title = {
+    for path in posts {
+        import "content/" + dir + path + ".typ": meta
+        let title = {
             let title = meta.title
             let title = if type(title) == content {
                 sanitize-content(title)
@@ -461,25 +461,26 @@
             }
             title
         }
-        #let draft = meta.at("draft", default: false)
-        #let created = meta.at("created", default: none)
-        #[
-            #show: html.span.with(class: "list")
-            #link(path + ".html", title)
-            #if draft [
-                #html.br()
-                #wip-draft
-            ]
-            #if created != none [
-                #html.br()
-                #show: emph
-                #show-date(created)
-            ]
-        ]
+
+        let draft = meta.at("draft", default: false)
+        let created = meta.at("created", default: none)
+
+        show: html.span.with(class: "list")
+        link(path + ".html", title)
+        if draft {
+            html.br()
+            wip-draft
+        }
+        if created != none {
+            html.br()
+            show: emph
+            show-date(created)
+        }
+
         // spacing
-        #html.br()
-        #html.br()
-    ]
+        html.br()
+        html.br()
+    }
 }
 
 #let note(title, body) = {
