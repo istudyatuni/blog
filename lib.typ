@@ -23,8 +23,8 @@
     light: "body.light",
 )
 #let palettes = (
-    dark: yaml("assets/themes/ocean.yaml").palette,
-    light: yaml("assets/themes/harmonic16-dark.yaml").palette,
+    light: yaml("assets/themes/github.yaml").palette,
+    dark: yaml("assets/themes/harmonic16-dark.yaml").palette,
 )
 
 // from google-webfonts-helper: https://gwfh.mranftl.com/fonts/nunito?subsets=cyrillic,latin
