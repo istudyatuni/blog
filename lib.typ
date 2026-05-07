@@ -457,10 +457,14 @@
     it
 }
 
+#let get-meta(path, dir: "") = {
+    import "content/" + dir + path + ".typ": meta
+    meta
+}
+
 #let collect-meta(posts, dir: "") = {
     for path in posts {
-        import "content/" + dir + path + ".typ": meta
-        ((path): meta)
+        ((path): get-meta(path, dir: dir))
     }
 }
 

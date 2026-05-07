@@ -1,6 +1,7 @@
-export TYPST_FEATURES := "html"
+export TYPST_FEATURES := "html,bundle"
 
 port := "3000"
+entry_point := "main.typ"
 serve_base := ""
 serve_base_prod := "blog"
 out-dir-base := "dist"
@@ -16,10 +17,6 @@ font-file := join(font-file-dir, font-file-name)
 [private]
 @default:
 	just --list --unsorted
-
-[private]
-mkoutput-dir path:
-	mkdir -p $(dirname {{ replace(path, source-dir, out-dir) }})
 
 [private]
 download-fonts:
@@ -44,40 +41,29 @@ copy-static:
 	cp {{ public-dir }}/fonts/*.woff2 "{{ out-font-file-dir }}"
 
 [private]
-typ cmd path *args:
-	typst {{cmd}} \
-		--root . \
-		{{ args }} \
-		{{ path }} \
-		{{ replace(replace(path, source-dir, out-dir), ".typ", ".html") }}
+typ cmd *args:
+	typst {{cmd}} {{ args }} \
+		--format=bundle \
+		--input {{ "base=" + serve_base }} \
+		'{{ entry_point }}' '{{ out-dir }}'
 
-watch path: (mkoutput-dir path) (typ "watch" path  "--port" port "--input" ("base=" + serve_base))
-build path: (mkoutput-dir path) (typ "compile" path "--input" ("base=" + serve_base))
+# build static dir
+build: download-fonts copy-static (typ "compile")
+# start dev server
+watch: (typ "watch" "--port" port)
 
-watch-root: (watch "content/index.typ")
-watch-go: (watch "content/why-i-dont-like-go.typ")
-watch-blog: (watch "content/about-blog.typ")
-watch-blog-ru: (watch "content/about-blog.ru.typ")
-watch-notes: (watch "content/notes/index.typ")
-watch-nixpkgs: (watch "content/notes/local-nixpkgs-build.typ")
-
-build-all: download-fonts copy-static
-	#!/usr/bin/env bash
-	set -euo pipefail
-	for path in $(fd .typ content); do
-		echo Building $path
-		just serve_base="{{ serve_base }}" build "$path"
-	done
-
+# build static dir with prod base
 build-prod:
-	just serve_base={{ serve_base_prod }} build-all
+	just serve_base={{ serve_base_prod }} build
 
-serve: build-all
+[private]
+serve: build
 	@echo Serving at http://localhost:{{ port }}/{{ serve_base }}
 	static-web-server -d {{ out-dir-base }} -p {{ port }}
 
+# build static dir with prod base and serve
 serve-prod:
 	just serve_base={{ serve_base_prod }} serve
 
 clean:
-	rm -r {{ out-dir-base }}
+	rm -rf {{ out-dir-base }}
