@@ -369,6 +369,7 @@
         }
         show html.elem.where(tag: "span"): it => {
             let color-css-prefix = "color:"
+            // not work, attrs now empty, and body contains styled(...)
             if not "style" in it.attrs or not it.attrs.style.contains(color-css-prefix) {
                 return it
             }
