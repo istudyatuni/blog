@@ -1,3 +1,5 @@
+export TYPST_FEATURES := "html"
+
 port := "3000"
 serve_base := ""
 serve_base_prod := "blog"
@@ -44,7 +46,6 @@ copy-static:
 [private]
 typ cmd path *args:
 	typst {{cmd}} \
-		--features html \
 		--root . \
 		{{ args }} \
 		{{ path }} \
