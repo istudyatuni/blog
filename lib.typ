@@ -438,6 +438,8 @@
     [
         #show-title(title, index)
 
+        #show heading.where(level: 1): it => panic("content should not have headings with level 1")
+
         #subtitle
 
         #if created != none {
@@ -464,8 +466,9 @@
                 it
             }
             show outline.entry: it => {
-                let level = (it.level - 1)
-                let el = it.element
+                // 2 is minimal heading.level inside page, decrease it so
+                // outline doesn't have extra indent on left side
+                let level = (it.level - 2)
                 html.span(style: "padding-left: " + str(level) + "em", it)
             }
             context heading(level: 2, outlined: false, toc-text.at(text.lang))
