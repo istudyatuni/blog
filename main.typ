@@ -18,6 +18,7 @@
     for (name, nested) in files.pairs() {
         if nested == none {
             let p = join-paths((base, name))
+            if is-lsp { continue }
             document(p + ".html")[
                 #include content-dir + "/" + p + ".typ"
             ]
@@ -31,6 +32,7 @@
 
 #let add-asset(path, base: public-dir) = {
     let real = join-paths((base, path))
+    if is-lsp { return }
     asset(path, read(real, encoding: none))
 }
 
@@ -38,5 +40,6 @@
 #add-asset("favicon.png")
 #for (style, weight) in nunito-font-variants {
     let path = font-path(style, weight)
+    if is-lsp { continue }
     add-asset(path)
 }

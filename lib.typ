@@ -33,6 +33,7 @@
 #let hex-int = array.range(0, 10).map(str) + ("a", "b", "c", "d", "e", "f")
 
 #let base = sys.inputs.at("base", default: "")
+#let is-lsp = sys.inputs.at("lsp", default: "false") == "true"
 
 #let months-long = (
     ru: (
