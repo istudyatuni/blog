@@ -53,7 +53,7 @@ build: download-fonts copy-static (typ "compile")
 watch: (typ "watch" "--port" port)
 
 # build static dir with prod base
-build-prod:
+build-prod: clean
 	just serve_base={{ serve_base_prod }} build
 
 [private]
@@ -62,7 +62,7 @@ serve: build
 	static-web-server -d {{ out-dir-base }} -p {{ port }}
 
 # build static dir with prod base and serve
-serve-prod:
+serve-prod: clean
 	just serve_base={{ serve_base_prod }} serve
 
 clean:
