@@ -149,15 +149,17 @@
         ()
     }
     html.header[
-        #html.span(class: "header-links")[
-            #if as-link {
-                link(dest)[#title]
-            } else {
-                title
-            }
-            #for l in folders-links {
-                html.span(class: "other", l)
-            }
+        #html.p[
+            #html.span(class: "header-links")[
+                #if as-link {
+                    link(dest)[#title]
+                } else {
+                    title
+                }
+                #for l in folders-links {
+                    html.span(class: "other", l)
+                }
+            ]
         ]
         #switch_theme_button
     ]

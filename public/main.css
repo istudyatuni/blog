@@ -108,7 +108,7 @@ a {
   display: inline-block;
 }
 
-span.list>a {
+div.list>a {
   font-size: 1.3em;
 }
 
