@@ -165,6 +165,18 @@
         .join()
 }
 
+#let fixup-theme(palette) = {
+    let theme = read("assets/base16.tmTheme")
+    for i in hex-int {
+        let dec = str(int(i, base: 16))
+        if dec.len() == 1 {
+            dec = "0" + dec
+        }
+        theme = theme.replace("#0000" + dec, palette.at("base0" + upper(i)))
+    }
+    theme
+}
+
 #let switch_theme_button = html.elem("button", attrs: ("onclick": "switch_theme()"))[Change theme]
 #let wip = [_*Work in progress*_]
 #let wip-draft = [_Draft_]
@@ -362,6 +374,9 @@
         as-link: not index,
         folder: folder,
     )
+
+    // dark palette looks ok in light theme
+    set raw(theme: bytes(fixup-theme(palettes.dark)))
 
     // doesn't work in latest typst
     /*// to recognize different tokens
