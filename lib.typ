@@ -23,6 +23,13 @@
     light: "body.light",
 )
 
+// from google-webfonts-helper: https://gwfh.mranftl.com/fonts/nunito?subsets=cyrillic,latin
+#let nunito-font-variants = {
+    let weights = array.range(200, 901, step: 100)
+    weights.map(w => ("normal", w))
+    weights.map(w => ("italic", w))
+}
+
 #let hex-int = array.range(0, 10).map(str) + ("a", "b", "c", "d", "e", "f")
 
 #let base = sys.inputs.at("base", default: "")
@@ -98,6 +105,19 @@
         }
     })
     .join()
+}
+
+#let font-path(style, weight) = {
+    let res = "/fonts/nunito-cyrillic_latin-"
+    if weight != 400 {
+        res += str(weight)
+        if style != "normal" {
+            res += style
+        }
+    } else {
+        res += if style == "normal" { "regular" } else { "italic" }
+    }
+    res + ".woff2"
 }
 
 #let gen-css-fonts(
@@ -335,24 +355,8 @@
 
     html.style(gen-css-fonts(
         "Nunito",
-        // from google-webfonts-helper: https://gwfh.mranftl.com/fonts/nunito?subsets=cyrillic,latin
-        variants: {
-            let weights = array.range(200, 901, step: 100)
-            weights.map(w => ("normal", w))
-            weights.map(w => ("italic", w))
-        },
-        path-fn: (style, weight) => {
-            let res = real-path("/fonts/nunito-cyrillic_latin-")
-            if weight != 400 {
-                res += str(weight)
-                if style != "normal" {
-                    res += style
-                }
-            } else {
-                res += if style == "normal" { "regular" } else { "italic" }
-            }
-            res + ".woff2"
-        },
+        variants: nunito-font-variants,
+        path-fn: (style, weight) => real-path(font-path(style, weight)),
     ))
     html.style(read("public/main.css"))
     html.script(read("public/main.js"))
