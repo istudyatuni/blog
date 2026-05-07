@@ -28,7 +28,10 @@
                 let p = join-paths((base, resolve-translation(name, tr)))
                 if is-lsp { continue }
                 document(p + ".html")[
+                    // workaround: using labels to limit which headings appear in outline
+                    #metadata("start") #label("__meta_doc_start_" + p)
                     #include content-dir + "/" + p + ".typ"
+                    #metadata("end") #label("__meta_doc_end_" + p)
                 ]
             }
         } else if type(nested) == dictionary {

@@ -449,7 +449,14 @@
                 html.span(style: "padding-left: " + str(level) + "em", it)
             }
             context heading(level: 2, outlined: false, toc-text.at(text.lang))
-            outline(title: none)
+            let id = resolve-translation(id, lang)
+            outline(
+                // workaround while outline show headings from all documents in bundle
+                target: selector(heading.where(outlined: true))
+                    .after(label("__meta_doc_start_" + id))
+                    .before(label("__meta_doc_end_" + id)),
+                title: none,
+            )
         }
     ]
 
