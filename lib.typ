@@ -22,6 +22,10 @@
     dark: "body.dark",
     light: "body.light",
 )
+#let palettes = (
+    dark: yaml("assets/themes/ocean.yaml").palette,
+    light: yaml("assets/themes/harmonic16-dark.yaml").palette,
+)
 
 // from google-webfonts-helper: https://gwfh.mranftl.com/fonts/nunito?subsets=cyrillic,latin
 #let nunito-font-variants = {
@@ -344,8 +348,8 @@
     ))
     html.style(read("public/main.css"))
     html.script(read("public/main.js"))
-    // html.style(css-for-theme(css-root-theme-selector.dark, yaml("assets/themes/ocean.yaml").palette))
-    // html.style(css-for-theme(css-root-theme-selector.light, yaml("assets/themes/harmonic16-dark.yaml").palette))
+    // html.style(css-for-theme(css-root-theme-selector.dark, palettes.dark))
+    // html.style(css-for-theme(css-root-theme-selector.light, palettes.light))
 
     show: html.body.with(class: "dark")
     html.script("restore_theme()")
