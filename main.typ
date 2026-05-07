@@ -25,13 +25,14 @@
                 translations.push("en")
             }
             for tr in translations {
-                let p = join-paths((base, resolve-translation(name, tr)))
+                let id = resolve-translation(name, tr)
+                let p = join-paths((base, id))
                 if is-lsp { continue }
                 document(p + ".html")[
                     // workaround: using labels to limit which headings appear in outline
-                    #metadata("start") #label("__meta_doc_start_" + p)
+                    #metadata("start") #label("__meta_doc_start_" + id)
                     #include content-dir + "/" + p + ".typ"
-                    #metadata("end") #label("__meta_doc_end_" + p)
+                    #metadata("end") #label("__meta_doc_end_" + id)
                 ]
             }
         } else if type(nested) == dictionary {
