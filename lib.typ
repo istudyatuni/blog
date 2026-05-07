@@ -67,11 +67,15 @@
 #let tags-display-joiner = [ #sym.dot.c ]
 #let tags-default-display(tags) = tags.map(t => "#" + t).map(html.span.with(class: "tag")).join(tags-display-joiner)
 
-#let link-translation(id, lang) = {
+#let resolve-translation(id, lang) = {
     if lang == default-lang {
-        return id + ".html"
+        return id
     }
-    id + "." + lang + ".html"
+    id + "." + lang
+}
+
+#let link-translation(id, lang) = {
+    resolve-translation(id, lang) + ".html"
 }
 
 // Join paths with /
@@ -463,7 +467,7 @@
 }
 
 #let get-meta(path, dir: "") = {
-    import "content/" + dir + path + ".typ": meta
+    import "content/" + join-paths((dir, path)) + ".typ": meta
     meta
 }
 

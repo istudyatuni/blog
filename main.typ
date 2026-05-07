@@ -1,4 +1,7 @@
-#import "/lib.typ": get-meta, join-paths, real-path, nunito-font-variants, font-path, is-lsp
+#import "/lib.typ": (
+    get-meta, join-paths, real-path, nunito-font-variants,
+    font-path, is-lsp, get-meta, resolve-translation, maybe-array
+)
 
 #let content-dir = "content"
 #let public-dir = "public"
@@ -17,11 +20,17 @@
 #let add-files(files, base: "") = {
     for (name, nested) in files.pairs() {
         if nested == none {
-            let p = join-paths((base, name))
-            if is-lsp { continue }
-            document(p + ".html")[
-                #include content-dir + "/" + p + ".typ"
-            ]
+            let translations = maybe-array(get-meta(name, dir: base).at("translations", default: "en"))
+            if "en" not in translations {
+                translations.push("en")
+            }
+            for tr in translations {
+                let p = join-paths((base, resolve-translation(name, tr)))
+                if is-lsp { continue }
+                document(p + ".html")[
+                    #include content-dir + "/" + p + ".typ"
+                ]
+            }
         } else if type(nested) == dictionary {
             add-files(nested, base: join-paths((base, name)))
         } else {
