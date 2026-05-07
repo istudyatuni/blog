@@ -35,12 +35,6 @@ download-fonts:
 	done
 
 [private]
-copy-static:
-	mkdir -p "{{ out-font-file-dir }}"
-	cp {{ public-dir }}/*.png "{{ out-dir }}"
-	cp {{ public-dir }}/fonts/*.woff2 "{{ out-font-file-dir }}"
-
-[private]
 typ cmd *args:
 	typst {{cmd}} {{ args }} \
 		--format=bundle \
@@ -48,7 +42,7 @@ typ cmd *args:
 		'{{ entry_point }}' '{{ out-dir }}'
 
 # build static dir
-build: download-fonts copy-static (typ "compile")
+build: download-fonts (typ "compile")
 # start dev server
 watch: (typ "watch" "--port" port)
 

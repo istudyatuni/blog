@@ -1,6 +1,8 @@
-#import "/lib.typ": get-meta, join-paths
+#import "/lib.typ": get-meta, join-paths, real-path, nunito-font-variants, font-path, is-lsp
 
 #let content-dir = "content"
+#let public-dir = "public"
+
 // relative to content-dir
 #let files = (
     notes: (
@@ -27,4 +29,14 @@
     }
 }
 
+#let add-asset(path, base: public-dir) = {
+    let real = join-paths((base, path))
+    asset(path, read(real, encoding: none))
+}
+
 #add-files(files)
+#add-asset("favicon.png")
+#for (style, weight) in nunito-font-variants {
+    let path = font-path(style, weight)
+    add-asset(path)
+}
