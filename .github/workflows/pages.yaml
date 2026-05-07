@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/pages.yaml
       - lib.typ
+      - main.typ
       - assets/**
       - content/**
       - public/**
@@ -38,7 +39,7 @@ jobs:
         run: |
           nix profile add "nixpkgs#just" && just -V
           nix profile add "nixpkgs#fd" && fd -V
-          nix profile add "nixpkgs/c6d65881c5624c9cae5ea6cedef24699b0c0a4c0#typst" && typst -V
+          nix profile add github:typst/typst-flake --override-input typst github:typst/typst/86e38439b61cd31c002a7ae5951c947e8630eeae && typst -V
 
       - name: build
         run: just build-prod
