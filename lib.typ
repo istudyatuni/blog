@@ -443,7 +443,7 @@
                 it
             }
             show outline.entry: it => {
-                let level = (it.level - 1) / 2
+                let level = (it.level - 1)
                 let el = it.element
                 html.span(style: "padding-left: " + str(level) + "em", it)
             }
