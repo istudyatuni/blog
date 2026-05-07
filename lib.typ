@@ -344,8 +344,8 @@
     ))
     html.style(read("public/main.css"))
     html.script(read("public/main.js"))
-    html.style(css-for-theme(css-root-theme-selector.dark, yaml("assets/themes/ocean.yaml").palette))
-    html.style(css-for-theme(css-root-theme-selector.light, yaml("assets/themes/harmonic16-dark.yaml").palette))
+    // html.style(css-for-theme(css-root-theme-selector.dark, yaml("assets/themes/ocean.yaml").palette))
+    // html.style(css-for-theme(css-root-theme-selector.light, yaml("assets/themes/harmonic16-dark.yaml").palette))
 
     show: html.body.with(class: "dark")
     html.script("restore_theme()")
@@ -359,7 +359,8 @@
         folder: folder,
     )
 
-    // to recognize different tokens
+    // doesn't work in latest typst
+    /*// to recognize different tokens
     set raw(theme: "assets/base16.tmTheme")
     show raw: it => {
         show: if it.block {
@@ -394,7 +395,7 @@
                 html.br()
             }
         }
-    }
+    }*/
 
     show heading: it => {
         if target() != "html" or not it.has("label") { return it }
