@@ -224,27 +224,6 @@
     }
 }
 
-#let show-outline = context {
-    let chapters = query(heading.where(outlined: true))
-    if chapters.len() == 0 {
-        return
-    }
-
-    heading(level: 2, outlined: false, toc-text.at(text.lang))
-
-    show: html.div.with(class: "toc-list")
-    for chapter in chapters {
-        let level = (chapter.level - 1) / 2
-        let id = chapter.label
-
-        html.span(
-            style: "padding-left: " + str(level) + "em",
-            link("#" + str(id), chapter.body),
-        )
-        html.br()
-    }
-}
-
 // Put value in array if it's not array. It `ty` is not `auto`, return array
 // only if `type(value)` is equal to `ty`
 #let maybe-array(value, ty: auto) = {
@@ -459,7 +438,17 @@
         }
 
         #if not index and toc {
-            show-outline
+            show outline: it => {
+                show: html.div.with(class: "toc-list")
+                it
+            }
+            show outline.entry: it => {
+                let level = (it.level - 1) / 2
+                let el = it.element
+                html.span(style: "padding-left: " + str(level) + "em", it)
+            }
+            context heading(level: 2, outlined: false, toc-text.at(text.lang))
+            outline(title: none)
         }
     ]
 

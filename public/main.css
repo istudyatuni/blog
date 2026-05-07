@@ -104,8 +104,9 @@ a {
   text-decoration: underline 1px;
 }
 
-.toc-list>span {
-  display: inline-block;
+.toc-list > nav ol {
+  padding-left: 0;
+  /*display: inline-block;*/
 }
 
 div.list>a {
