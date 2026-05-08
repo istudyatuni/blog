@@ -124,6 +124,25 @@
     .join()
 }
 
+// https://sitandr.github.io/typst-examples-book/book/typstonomicon/extract_plain_text.html
+#let content-to-text(it) = {
+    if type(it) == str {
+        it
+    } else if it == [ ] {
+        " "
+    } else if it.has("children") {
+        it.children.map(content-to-text).join()
+    } else if it.has("body") {
+        content-to-text(it.body)
+    } else if it.has("text") {
+        if type(it.text) == str {
+            it.text
+        } else {
+            content-to-text(it.text)
+        }
+    }
+}
+
 #let font-path(style, weight) = {
     let res = "/fonts/nunito-cyrillic_latin-"
     if weight != 400 {
@@ -336,14 +355,12 @@
     html.meta(name: "viewport", content: "width=device-width, initial-scale=1")
     html.meta(name: "color-scheme", content: "dark")
 
-    html.title(title)
-    // todo: convert content
-    if type(title) == str {
-        if subtitle != none and type(subtitle) == str {
-            og("title", title + " " + subtitle)
-        } else {
-            og("title", title)
-        }
+    let text-title = content-to-text(title)
+    html.title(text-title)
+    if subtitle != none and type(subtitle) == str {
+        og("title", text-title + " " + subtitle)
+    } else {
+        og("title", text-title)
     }
     og("type", "article")
     og("image", real-path("favicon.png"))
