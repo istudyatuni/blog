@@ -11,6 +11,7 @@
     notes: (
         index: none,
         local-nixpkgs-build: none,
+        run-zsh-nix-develop: none,
     ),
     index: none,
     about-blog: none,

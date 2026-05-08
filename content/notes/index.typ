@@ -9,6 +9,7 @@
 
 #let posts = (
     "local-nixpkgs-build",
+    "run-zsh-nix-develop",
 )
 
 #posts-list(posts, dir: "notes/")
