@@ -195,8 +195,18 @@ strong {
   color: var(--text);
 }
 
-.heading-id:hover {
-  color: var(--highlight);
+.heading-id:hover::after,
+.heading-id:target::after {
+  content: "#";
+  margin-left: 0.3em;
+}
+
+.heading-id:hover::after {
+  color: var(--border);
+}
+
+.heading-id:target::after {
+  color: var(--text-muted);
 }
 
 .pointer {
