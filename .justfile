@@ -14,6 +14,8 @@ font-file-dir := join(public-dir, "fonts")
 out-font-file-dir := join(out-dir, "fonts")
 font-file := join(font-file-dir, font-file-name)
 
+typst-exe := "typst"
+
 [private]
 @default:
 	just --list --unsorted
@@ -36,7 +38,7 @@ download-fonts:
 
 [private]
 typ cmd *args:
-	typst {{cmd}} {{ args }} \
+	{{ typst-exe }} {{cmd}} {{ args }} \
 		--format=bundle \
 		--input {{ "base=" + serve_base }} \
 		'{{ entry_point }}' '{{ out-dir }}'
