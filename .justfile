@@ -43,6 +43,11 @@ typ cmd *args:
 		--input {{ "base=" + serve_base }} \
 		'{{ entry_point }}' '{{ out-dir }}'
 
+# pin devshell derivation
+shell:
+	@# run user shell inside
+	nix develop --profile flake.drv --command bash -c "SHELL=$SHELL $SHELL"
+
 # build static dir
 build: download-fonts (typ "compile")
 # start dev server
