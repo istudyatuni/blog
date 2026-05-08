@@ -165,7 +165,7 @@
         .join()
 }
 
-#let fixup-theme(palette) = {
+#let fill-theme-colors(palette) = {
     let theme = read("assets/base16.tmTheme")
     for i in hex-int {
         let dec = str(int(i, base: 16))
@@ -376,7 +376,7 @@
     )
 
     // dark palette looks ok in light theme
-    set raw(theme: bytes(fixup-theme(palettes.dark)))
+    set raw(theme: bytes(fill-theme-colors(palettes.dark)))
 
     // doesn't work in latest typst
     /*// to recognize different tokens
