@@ -69,6 +69,10 @@
 #let date-format = (
     en: "[day] [month repr:short]. [year]",
 )
+#let date-created-format = (
+    en: "[month repr:short] [day], [year]",
+    ru: "[day] [month repr:long] [year]",
+)
 
 #let default-lang = "en"
 
@@ -232,16 +236,13 @@
 }
 
 #let show-date(date) = context {
-    let res = date.display("[day] [month repr:long] [year]")
+    let res = date.display(date-created-format.at(text.lang))
     if text.lang == "en" {
-        res
-    } else if text.lang == "ru" {
-        let (m, replaced) = months-long.ru.pairs().at(date.month() - 1)
-        show m: replaced
-        res
-    } else {
-        [Unknown lang for date]
+        return res
     }
+    let (m, replaced) = months-long.at(text.lang).pairs().at(date.month() - 1)
+    show m: replaced
+    res
 }
 
 // Put value in array if it's not array. It `ty` is not `auto`, return array
