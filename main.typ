@@ -53,6 +53,5 @@
 #add-asset("favicon.png")
 #for (style, weight) in nunito-font-variants {
     let path = font-path(style, weight)
-    if is-lsp { continue }
     add-asset(path)
 }
