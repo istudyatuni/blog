@@ -1,4 +1,4 @@
-#import "/lib.typ": template, folders
+#import "/lib/lib.typ": template, folders
 
 #let meta = (
     id: "local-nixpkgs-build",

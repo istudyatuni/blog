@@ -1,4 +1,4 @@
-#import "/lib.typ": template, folders, show-date, note
+#import "/lib/lib.typ": template, folders, show-date, note
 
 #let meta = (
     id: "about-blog",

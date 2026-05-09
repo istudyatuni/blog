@@ -1,4 +1,4 @@
-#import "/lib.typ": (
+#import "/lib/lib.typ": (
     get-meta, join-paths, real-path, nunito-font-variants,
     font-path, is-lsp, get-meta, resolve-translation, maybe-array,
     folders, folder-paths, template, posts-list

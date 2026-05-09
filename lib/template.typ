@@ -1,284 +1,38 @@
-// todo: unhardcode
-#let deploy-url = "istudyatuni.github.io"
-
-#let folders = (
-    blog: "blog",
-    notes: "notes",
+#import "blocks.typ": (
+    folder-names,
+    navbar,
+    wip,
+    wip-draft,
 )
-
-#let root-folder = folders.blog
-
-#let folder-names = (
-    blog: "My blog",
-    notes: "My notes",
+#import "constants.typ": (
+    default-lang,
+    deploy-url,
+    nunito-font-variants,
+    palettes,
+    tags-default-display,
+    tags-display-joiner,
+    toc-text,
+    translation-link-text,
 )
-
-#let folder-paths = (
-    blog: "",
-    notes: "notes",
+#import "content.typ": content-to-text, sanitize-content
+#import "gen.typ": (
+    fill-theme-colors,
+    font-path,
+    gen-css-fonts,
+    og,
 )
-
-#let css-root-theme-selector = (
-    dark: "body.dark",
-    light: "body.light",
+#import "helpers.typ": (
+    maybe-array,
+    show-date,
+    show-title,
 )
-#let palettes = (
-    light: yaml("assets/themes/github.yaml").palette,
-    dark: yaml("assets/themes/harmonic16-dark.yaml").palette,
+#import "path.typ": (
+    join-paths,
+    real-folder-path,
+    real-path,
 )
-
-// from google-webfonts-helper: https://gwfh.mranftl.com/fonts/nunito?subsets=cyrillic,latin
-#let nunito-font-variants = {
-    let weights = array.range(200, 901, step: 100)
-    weights.map(w => ("normal", w))
-    weights.map(w => ("italic", w))
-}
-
-#let hex-int = array.range(0, 10).map(str) + ("a", "b", "c", "d", "e", "f")
-
-#let base = sys.inputs.at("base", default: "")
-#let is-lsp = sys.inputs.at("lsp", default: "false") == "true"
-
-#let months-long = (
-    ru: (
-        January: "января",
-        February: "февраля",
-        March: "марта",
-        April: "апреля",
-        May: "мая",
-        June: "июня",
-        July: "июля",
-        August: "августа",
-        September: "сентября",
-        October: "октября",
-        November: "ноября",
-        December: "декабря",
-    ),
-)
-
-#let translation-link-text = (
-    ru: "Читать на русском",
-    en: "Read in English",
-)
-
-#let toc-text = (
-    ru: "Содержание",
-    en: "Table of Contents",
-)
-
-#let date-format = (
-    en: "[day] [month repr:short]. [year]",
-)
-#let date-created-format = (
-    en: "[month repr:short] [day], [year]",
-    ru: "[day] [month repr:long] [year]",
-)
-
-#let default-lang = "en"
-
-#let tags-display-joiner = [ #sym.dot.c ]
-#let tags-default-display(tags) = tags.map(t => "#" + t).map(html.span.with(class: "tag")).join(tags-display-joiner)
-
-#let resolve-translation(id, lang) = {
-    if lang == default-lang {
-        return id
-    }
-    id + "." + lang
-}
-
-#let link-translation(id, lang) = {
-    resolve-translation(id, lang) + ".html"
-}
-
-// Join paths with /
-#let join-paths(parts) = {
-    let res = parts.filter(p => p != "")
-    if res.len() == 0 {
-        return ""
-    }
-    res.join("/").replace(regex("//+"), "/")
-}
-
-// Absolute path
-#let real-path(path) = {
-    ("/" + join-paths((base, path))).replace(regex("//+"), "/")
-}
-
-// Absolute folder path
-#let real-folder-path(folder) = {
-    real-path(folder-paths.at(folder))
-}
-
-// remove markup from content
-// currently removes:
-// - links
-#let sanitize-content(it) = {
-    assert.eq(type(it), content)
-    it.children.map(c => {
-        if c.func() == link {
-            c.body
-        } else {
-            c
-        }
-    })
-    .join()
-}
-
-// https://sitandr.github.io/typst-examples-book/book/typstonomicon/extract_plain_text.html
-#let content-to-text(it) = {
-    if type(it) == str {
-        it
-    } else if it == [ ] {
-        " "
-    } else if it.has("children") {
-        it.children.map(content-to-text).join()
-    } else if it.has("body") {
-        content-to-text(it.body)
-    } else if it.has("text") {
-        if type(it.text) == str {
-            it.text
-        } else {
-            content-to-text(it.text)
-        }
-    }
-}
-
-#let font-path(style, weight) = {
-    let res = "/fonts/nunito-cyrillic_latin-"
-    if weight != 400 {
-        res += str(weight)
-        if style != "normal" {
-            res += style
-        }
-    } else {
-        res += if style == "normal" { "regular" } else { "italic" }
-    }
-    res + ".woff2"
-}
-
-#let gen-css-fonts(
-    name,
-    format: "woff2",
-    variants: (("normal", 200)),
-    path-fn: (style, weight) => style + weight + ".ttf",
-) = {
-    let attr(name, value) = "  " + name + ": " + str(value) + ";\n"
-    let string(value) = "'" + value + "'"
-    let url(value) = "url(" + string(value) + ")"
-    let format-value(value) = "format(" + string(value) + ")"
-
-    let res = ""
-    for (style, weight) in variants {
-        let face = "@font-face {\n";
-        // https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display
-        face += attr("font-display", "swap")
-        face += attr("font-family", string(name))
-        face += attr("font-style", style)
-        face += attr("font-weight", weight)
-        // Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+
-        face += attr("src", url(path-fn(style, weight)) + " " + format-value(format))
-        res += face + "}\n"
-    }
-    res
-}
-
-#let css-for-theme(selector, palette) = {
-    palette
-        .pairs()
-        .sorted()
-        .map(((_, c)) => c).enumerate().map(((n, c)) => {
-            selector + " .b" + hex-int.at(n) + "{color:" + c + "}"
-        })
-        .join()
-}
-
-#let fill-theme-colors(palette) = {
-    let theme = read("assets/base16.tmTheme")
-    for i in hex-int {
-        let dec = str(int(i, base: 16))
-        if dec.len() == 1 {
-            dec = "0" + dec
-        }
-        theme = theme.replace("#0000" + dec, palette.at("base0" + upper(i)))
-    }
-    theme
-}
-
-#let switch_theme_button = html.elem("button", attrs: ("onclick": "switch_theme()"))[Change theme]
-#let wip = [_*Work in progress*_]
-#let wip-draft = [_Draft_]
-
-#let navbar(title, dest: "..", as-link: true, folder: none) = {
-    let folders-links = if folder != none {
-        folders.keys()
-            .filter(k => k != folder)
-            .map(k => link(real-folder-path(k), folder-names.at(k)))
-    } else {
-        ()
-    }
-    html.header[
-        #html.p[
-            #html.span(class: "header-links")[
-                #if as-link {
-                    link(dest)[#title]
-                } else {
-                    title
-                }
-                #for l in folders-links {
-                    html.span(class: "other", l)
-                }
-            ]
-        ]
-        #switch_theme_button
-    ]
-}
-
-#let og(name, value) = {
-    if type(value) == array {
-        for e in value {
-            og(name, e)
-        }
-    } else {
-        html.elem("meta", attrs: (property: "og:" + name, content: value))
-    }
-}
-
-#let show-title(title, index) = {
-    if title != none and not index {
-        set heading(outlined: false)
-        if type(title) == str or (type(title) == content and title.func() != heading) {
-            [= #title]
-        } else if type(title) == content {
-            title
-        }
-    }
-}
-
-#let show-date(date) = context {
-    let res = date.display(date-created-format.at(text.lang))
-    if text.lang == "en" {
-        return res
-    }
-    let (m, replaced) = months-long.at(text.lang).pairs().at(date.month() - 1)
-    show m: replaced
-    res
-}
-
-// Put value in array if it's not array. It `ty` is not `auto`, return array
-// only if `type(value)` is equal to `ty`
-#let maybe-array(value, ty: auto) = {
-    if ty != auto {
-        if type(value) == ty {
-            (value,)
-        } else {
-            value
-        }
-    } else if type(value) != array {
-        (value,)
-    } else {
-        value
-    }
-}
+#import "meta.typ": collect-meta
+#import "resolve.typ": link-translation, resolve-translation
 
 #let pdf-template(
     title: none,
@@ -380,8 +134,8 @@
         variants: nunito-font-variants,
         path-fn: (style, weight) => real-path(font-path(style, weight)),
     ))
-    html.style(read("public/main.css"))
-    html.script(read("public/main.js"))
+    html.style(read("/public/main.css"))
+    html.script(read("/public/main.js"))
     // html.style(css-for-theme(css-root-theme-selector.dark, palettes.dark))
     // html.style(css-for-theme(css-root-theme-selector.light, palettes.light))
 
@@ -508,17 +262,6 @@
     it
 }
 
-#let get-meta(path, dir: "") = {
-    import "content/" + join-paths((dir, path)) + ".typ": meta
-    meta
-}
-
-#let collect-meta(posts, dir: "") = {
-    for path in posts {
-        ((path): get-meta(path, dir: dir))
-    }
-}
-
 // each post should contain importable "meta" dict with the same values as
 // passed to `template()`. it will be used as import "post.typ": meta
 #let posts-list(posts, dir: "") = {
@@ -598,10 +341,4 @@
         show: html.span.with(style: "margin-left: 1.5em")
         tags-default-display(tags)
     }
-}
-
-#let note(title, body) = {
-    show: html.div.with(class: "note")
-    html.p(class: "title", emph(title))
-    body
 }
