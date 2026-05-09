@@ -14,7 +14,7 @@
     toc-text,
     translation-link-text,
 )
-#import "content.typ": content-to-text, sanitize-content
+#import "content.typ": content-to-text
 #import "gen.typ": (
     fill-theme-colors,
     font-path,
@@ -99,7 +99,7 @@
     let title = if index {
         folder-names.at(folder)
     } else if type(title) == content {
-        sanitize-content(title)
+        content-to-text(title)
     } else {
         title
     }
@@ -310,7 +310,7 @@
         let title = {
             let title = meta.title
             let title = if type(title) == content {
-                sanitize-content(title)
+                content-to-text(title)
             } else if type(title) == str {
                 title
             } else {

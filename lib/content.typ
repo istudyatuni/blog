@@ -1,18 +1,3 @@
-// remove markup from content
-// currently removes:
-// - links
-#let sanitize-content(it) = {
-    assert.eq(type(it), content)
-    it.children.map(c => {
-        if c.func() == link {
-            c.body
-        } else {
-            c
-        }
-    })
-    .join()
-}
-
 // https://sitandr.github.io/typst-examples-book/book/typstonomicon/extract_plain_text.html
 #let content-to-text(it) = {
     if type(it) == str {
