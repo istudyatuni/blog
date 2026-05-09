@@ -114,7 +114,7 @@
     og("image:width", "32")
     og("image:height", "32")
     context {
-        let id = doc-name.at(here())
+        let id = resolve-translation(doc-name.at(here()), lang)
         let url-path = join-paths((
             if folder != none { real-folder-path(folder) } else { "" },
             if id != none { id + ".html" } else { "" },
