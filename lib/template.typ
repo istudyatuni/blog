@@ -244,6 +244,7 @@
                 html.span(style: "padding-left: " + str(level) + "em", it)
             }
             let id = doc-name.at(here())
+            let id = resolve-translation(id, lang)
             // workaround while outline show headings from all documents in bundle
             let target = selector(heading.where(outlined: true))
                 .after(label("__meta_doc_start_" + id))
@@ -251,7 +252,6 @@
             context if query(target).len() > 0 {
                 heading(level: 2, outlined: false, toc-text.at(text.lang))
             }
-            let id = resolve-translation(id, lang)
             outline(target: target, title: none)
         }
     ]
