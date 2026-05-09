@@ -33,6 +33,7 @@
 )
 #import "meta.typ": collect-meta
 #import "resolve.typ": link-translation, resolve-translation
+#import "state.typ": doc-name
 
 #let pdf-template(
     title: none,
@@ -47,11 +48,6 @@
 }
 
 #let template(
-    // required
-    // todo: this is required only to set og:url
-    // old description:
-    // name of file without .typ/.ru.typ, required when translations is set
-    id: none,
     // in which folder template is applied
     folder: none,
     // if it's a folder's index file
@@ -86,10 +82,6 @@
     let translations = maybe-array(translations)
     let tags = maybe-array(tags)
 
-    // todo: see comment about id
-    assert(index or id != none, message: "id should be set when non-index")
-    // assert(not (id == none and translations.len() != 0), message: "id should be set when translations is set")
-
     set text(lang: lang)
 
     context if target() == "paged" {
@@ -120,11 +112,14 @@
     og("image", real-path("favicon.png"))
     og("image:width", "32")
     og("image:height", "32")
-    let url-path = join-paths((
-        if folder != none { real-folder-path(folder) } else { "" },
-        if id != none { id + ".html" } else { "" },
-    ))
-    og("url", "https://" + deploy-url + url-path)
+    context {
+        let id = doc-name.at(here())
+        let url-path = join-paths((
+            if folder != none { real-folder-path(folder) } else { "" },
+            if id != none { id + ".html" } else { "" },
+        ))
+        og("url", "https://" + deploy-url + url-path)
+    }
 
     // https://icons8.com/icon/L0iBlZCZtM8q/blog
     html.link(type: "image/png", sizes: ((32, 32),), rel: "icon", href: real-path("favicon.png"))
@@ -231,12 +226,13 @@
         }
 
         #if translations.len() != 0 {
-            for tr in translations {
+            context for tr in translations {
+                let id = doc-name.at(here())
                 link(link-translation(id, tr), translation-link-text.at(tr))
             }
         }
 
-        #if not index and toc {
+        #context if not index and toc {
             show outline: it => {
                 show: html.div.with(class: "toc-list")
                 it
@@ -247,6 +243,7 @@
                 let level = (it.level - 2)
                 html.span(style: "padding-left: " + str(level) + "em", it)
             }
+            let id = doc-name.at(here())
             // workaround while outline show headings from all documents in bundle
             let target = selector(heading.where(outlined: true))
                 .after(label("__meta_doc_start_" + id))

@@ -1,7 +1,6 @@
 #import "/lib/lib.typ": template, folders, show-date, note
 
 #let meta = (
-    id: "about-blog",
     folder: folders.blog,
     title: "Как я сделал блог на Typst",
     subtitle: "и немного Rust",

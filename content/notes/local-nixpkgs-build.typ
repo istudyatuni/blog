@@ -1,7 +1,6 @@
 #import "/lib/lib.typ": template, folders
 
 #let meta = (
-    id: "local-nixpkgs-build",
     folder: folders.notes,
     title: [Build a package in a local clone of #link("https://github.com/NixOS/nixpkgs")[nixpkgs]],
     tags: "nix",

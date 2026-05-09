@@ -1,7 +1,6 @@
 #import "/lib/lib.typ": template, folders
 
 #let meta = (
-    id: "run-zsh-nix-develop",
     folder: folders.notes,
     title: [Use your shell instead of Bash in ```sh nix develop```],
     tags: "nix",
