@@ -110,6 +110,11 @@ a {
 
 div.list>a {
   font-size: 1.3em;
+  text-decoration: none;
+}
+
+div.list>a:hover {
+  text-decoration: underline;
 }
 
 body:not(.light) span.light {
