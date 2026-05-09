@@ -25,6 +25,7 @@
     maybe-array,
     show-date,
     show-title,
+    workaround-outline,
 )
 #import "path.typ": (
     join-paths,
@@ -243,16 +244,8 @@
                 let level = (it.level - 2)
                 html.span(style: "padding-left: " + str(level) + "em", it)
             }
-            let id = doc-name.at(here())
-            let id = resolve-translation(id, lang)
-            // workaround while outline show headings from all documents in bundle
-            let target = selector(heading.where(outlined: true))
-                .after(label("__meta_doc_start_" + id))
-                .before(label("__meta_doc_end_" + id))
-            context if query(target).len() > 0 {
-                heading(level: 2, outlined: false, toc-text.at(text.lang))
-            }
-            outline(target: target, title: none)
+            set heading(level: 2)
+            workaround-outline(title: toc-text.at(lang))
         }
     ]
 

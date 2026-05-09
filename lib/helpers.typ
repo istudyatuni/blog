@@ -1,4 +1,6 @@
-#import "constants.typ": date-created-format, months-long
+#import "constants.typ": date-created-format, months-long, toc-text
+#import "state.typ": doc-name
+#import "resolve.typ": resolve-translation
 
 #let show-title(title, index) = {
     if title != none and not index {
@@ -35,4 +37,24 @@
     } else {
         value
     }
+}
+
+// workaround while outline show headings from all documents in bundle
+#let workaround-outline-wrap(id, body) = [
+    #metadata("start") #label("__meta_doc_start_" + id)
+    #body
+    #metadata("end") #label("__meta_doc_end_" + id)
+]
+
+#let workaround-outline(title: "Contents") = context {
+    let lang = text.lang
+    let id = doc-name.at(here())
+    let id = resolve-translation(id, lang)
+    let target = selector(heading.where(outlined: true))
+        .after(label("__meta_doc_start_" + id))
+        .before(label("__meta_doc_end_" + id))
+    if query(target).len() > 0 {
+        heading(outlined: false, title)
+    }
+    outline(target: target, title: none)
 }

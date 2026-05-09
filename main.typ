@@ -1,7 +1,8 @@
 #import "/lib/lib.typ": (
     get-meta, join-paths, real-path, nunito-font-variants,
     font-path, is-lsp, get-meta, resolve-translation, maybe-array,
-    folders, folder-paths, template, posts-list, doc-name
+    folders, folder-paths, template, posts-list, doc-name,
+    workaround-outline-wrap
 )
 
 #let content-dir = "content"
@@ -40,12 +41,11 @@
                 let p = join-paths((base, id))
                 if is-lsp { continue }
                 document(p + ".html")[
-                    // workaround: using labels to limit which headings appear in outline
-                    #metadata("start") #label("__meta_doc_start_" + id)
+                    #show: workaround-outline-wrap.with(id)
+
                     #doc-name.update(_ => name)
                     #include content-dir + "/" + p + ".typ"
                     #doc-name.update(_ => none)
-                    #metadata("end") #label("__meta_doc_end_" + id)
                 ]
             }
         } else if type(nested) == dictionary {
