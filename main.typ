@@ -1,7 +1,7 @@
 #import "/lib/lib.typ": (
     get-meta, join-paths, real-path, nunito-font-variants,
     font-path, is-lsp, get-meta, resolve-translation, maybe-array,
-    folders, folder-paths, template, posts-list, doc-name,
+    folders, folder-paths, template, posts-list, doc-name-wrap,
     workaround-outline-wrap
 )
 
@@ -42,10 +42,8 @@
                 if is-lsp { continue }
                 document(p + ".html")[
                     #show: workaround-outline-wrap.with(id)
-
-                    #doc-name.update(_ => name)
+                    #show: doc-name-wrap.with(name)
                     #include content-dir + "/" + p + ".typ"
-                    #doc-name.update(_ => none)
                 ]
             }
         } else if type(nested) == dictionary {
